@@ -10,7 +10,7 @@ public:
     /*Assinatura dos métodos básicos para o funcionamento da classe*/
 
     Graph(std::ifstream& instance);
-    Graph(bool directed = false, bool weighted_edges = false, bool weighted_nodes = false);
+    Graph(std::string name, bool directed = false, bool weighted_edges = false, bool weighted_nodes = false);
     ~Graph();
 
     void remove_node(size_t node_id);
@@ -23,6 +23,7 @@ public:
     int connected(size_t node_id_1, size_t node_id_2);
 
 private:
+    std::string name;
     size_t number_of_nodes;
     size_t number_of_edges;
     bool   directed;
