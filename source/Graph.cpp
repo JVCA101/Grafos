@@ -113,17 +113,21 @@ void Graph::add_edge(size_t node_id_1, size_t node_id_2, float weight)
     node_1->first_edge = new_edge;
     node_1->number_of_edges++;
 
-    // Recria a aresta
-    new_edge = new Edge;
+    // Checa se o grafo é direcionado, caso não seja, cria a aresta no nó 2
+    if(!this->directed)
+    { 
+        // Recria a aresta
+        new_edge = new Edge;
 
-    // Inicializa aresta para apontar para o nó 1
-    new_edge->target_id = node_id_1;
-    new_edge->weight = weight;
+        // Inicializa aresta para apontar para o nó 1
+        new_edge->target_id = node_id_1;
+        new_edge->weight = weight;
 
-    // Adiciona a aresta ao nó 2
-    new_edge->next_edge = node_2->first_edge;
-    node_2->first_edge = new_edge;
-    node_2->number_of_edges++;
+        // Adiciona a aresta ao nó 2
+        new_edge->next_edge = node_2->first_edge;
+        node_2->first_edge = new_edge;
+        node_2->number_of_edges++;
+    }
 
 
     // Incrementa o número de arestas
