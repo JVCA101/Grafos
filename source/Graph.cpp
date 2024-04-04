@@ -86,7 +86,6 @@ void Graph::add_edge(size_t node_id_1, size_t node_id_2, float weight)
     // Procura os nós
     Node *node_1 = nullptr;
     Node *node_2 = nullptr;
-    
     for(Node *aux = this->first_node; aux != nullptr; aux = aux->next_node)
     {
         if(aux->id == node_id_1)
@@ -95,6 +94,7 @@ void Graph::add_edge(size_t node_id_1, size_t node_id_2, float weight)
             node_2 = aux;
     }
 
+    // Checa se os nós foram encontrados
     if(node_1 == nullptr || node_2 == nullptr)
     {
         std::cout << "Error: nodes not found\n";
