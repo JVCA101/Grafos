@@ -7,7 +7,40 @@ Graph::Graph(std::ifstream& instance)
         std::cout << "Error: input file is not open\n";
         exit(1);
     }
-    
+
+    // inicializa variáveis
+    std::string line, string_node_1, string_node_2, string_weight;
+    size_t node_id_1, node_id_2, num_nodes(0);
+    float weight;
+
+    // lê o número de nós
+    std::getline(instance, line);
+    num_nodes = std::stoi(line);
+
+
+    // lê os nós e arestas
+    for(size_t i = 0; i < num_nodes; i++)
+    {
+        // lê uma linha do arquivo e separa os valores
+        std::getline(instance, line);
+        string_node_1 = line.substr(0, line.find(" "));
+        line.erase(0, line.find(" ") + 1);
+        string_node_2 = line.substr(0, line.find(" "));
+        line.erase(0, line.find(" ") + 1);
+        string_weight = line;
+
+        // converte os valores para os tipos corretos
+        node_id_1 = std::stoi(string_node_1);
+        node_id_2 = std::stoi(string_node_2);
+        weight = std::stof(string_weight);
+
+
+        // adiciona os nós e arestas ao grafo //! verificar depois
+        this->add_node(node_id_1);
+        this->add_node(node_id_2);
+        this->add_edge(node_id_1, node_id_2, weight);
+    }
+
 }
 
 Graph::Graph(std::string name, bool directed, bool weighted_edges, bool weighted_nodes)
