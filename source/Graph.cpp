@@ -106,7 +106,9 @@ void Graph::add_edge(size_t node_id_1, size_t node_id_2, float weight)
 
     // Inicializa aresta para apontar para o nó 2
     new_edge->target_id = node_id_2;
-    new_edge->weight = weight;
+
+    // Checa se a aresta é ponderada
+    if(this->weighted_edges) new_edge->weight = weight;
 
     // Adiciona a aresta ao nó 1
     new_edge->next_edge = node_1->first_edge;
@@ -121,7 +123,9 @@ void Graph::add_edge(size_t node_id_1, size_t node_id_2, float weight)
 
         // Inicializa aresta para apontar para o nó 1
         new_edge->target_id = node_id_1;
-        new_edge->weight = weight;
+
+        // Checa se a aresta é ponderada
+        if(this->weighted_edges) new_edge->weight = weight;
 
         // Adiciona a aresta ao nó 2
         new_edge->next_edge = node_2->first_edge;
