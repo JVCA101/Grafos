@@ -9,6 +9,8 @@ class Graph
 public:
     /*Assinatura dos métodos básicos para o funcionamento da classe*/
 
+
+    // Funções Principais
     Graph(std::ifstream& instance);
     Graph(std::string name, bool directed = false, bool weighted_edges = false, bool weighted_nodes = false);
     ~Graph();
@@ -31,6 +33,11 @@ private:
     bool   weighted_nodes;
     Node  *first_node;
     Node  *last_node;
+
+
+    //* Funções Auxiliares
+    void search_nodes(Node *node_1, size_t node_id_1, Node *node_2 = nullptr, size_t node_id_2 = -1);
+    void aux_remove_edge(Node *node_1, size_t node_id_2);
 };
 
 #endif  //GRAPH_HPP

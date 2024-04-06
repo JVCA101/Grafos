@@ -1,5 +1,8 @@
 #include "../include/Graph.hpp"
 
+
+// Funções principais
+
 Graph::Graph(std::ifstream& instance)
 {
     if(!instance.is_open())
@@ -71,18 +74,7 @@ void Graph::remove_edge(size_t node_position_1, size_t node_position_2)
     // Procura os nós
     Node *node_1 = nullptr;
     Node *node_2 = nullptr;
-
-    for(Node *aux = this->first_node; aux != nullptr; aux = aux->next_node)
-    {
-        if(aux->id == node_position_1)
-            node_1 = aux;
-        if(aux->id == node_position_2)
-            node_2 = aux;
-
-        // Checa se os nós foram encontrados
-        if(node_1 != nullptr && node_2 != nullptr)
-            break;
-    }
+    search_nodes(node_1, node_position_1, node_2, node_position_2);
 
     // Checa se os nós foram encontrados
     if(node_1 == nullptr || node_2 == nullptr)
@@ -92,50 +84,52 @@ void Graph::remove_edge(size_t node_position_1, size_t node_position_2)
     }
 
     // Remove a aresta do nó 1
-    Edge *prev_edge = nullptr;
-    for(Edge *edge = node_1->first_edge; edge != nullptr; edge = edge->next_edge)
-    {
-        if(edge->target_id == node_position_2)
-        {
-             // Caso seja a primeira aresta
-            if(prev_edge == nullptr)
-                node_1->first_edge = edge->next_edge;
-            // Caso não seja a primeira aresta, atualiza o ponteiro da aresta anterior para o próximo	
-            else
-                prev_edge->next_edge = edge->next_edge;
+    // Edge *prev_edge = nullptr;
+    // for(Edge *edge = node_1->first_edge; edge != nullptr; edge = edge->next_edge)
+    // {
+    //     if(edge->target_id == node_position_2)
+    //     {
+    //          // Caso seja a primeira aresta
+    //         if(prev_edge == nullptr)
+    //             node_1->first_edge = edge->next_edge;
+    //         // Caso não seja a primeira aresta, atualiza o ponteiro da aresta anterior para o próximo	
+    //         else
+    //             prev_edge->next_edge = edge->next_edge;
 
-            // Deleta a aresta
-            delete edge;
-            node_1->number_of_edges--;
-            break;
-        }
+    //         // Deleta a aresta
+    //         delete edge;
+    //         node_1->number_of_edges--;
+    //         break;
+    //     }
 
-        prev_edge = edge;
-    }
+    //     prev_edge = edge;
+    // }
+    aux_remove_edge(node_1, node_position_2);
 
     // Checa se o grafo é direcionado, caso não seja, remove a aresta do nó 2
     if(!this->directed)
     {
-        prev_edge = nullptr;
-        for(Edge *edge = node_2->first_edge; edge != nullptr; edge = edge->next_edge)
-        {
-            if(edge->target_id == node_position_1)
-            {
-                // Caso seja a primeira aresta
-                if(prev_edge == nullptr)
-                    node_2->first_edge = edge->next_edge;
-                // Caso não seja a primeira aresta, atualiza o ponteiro da aresta anterior para o próximo	
-                else
-                    prev_edge->next_edge = edge->next_edge;
+        // prev_edge = nullptr;
+        // for(Edge *edge = node_2->first_edge; edge != nullptr; edge = edge->next_edge)
+        // {
+        //     if(edge->target_id == node_position_1)
+        //     {
+        //         // Caso seja a primeira aresta
+        //         if(prev_edge == nullptr)
+        //             node_2->first_edge = edge->next_edge;
+        //         // Caso não seja a primeira aresta, atualiza o ponteiro da aresta anterior para o próximo	
+        //         else
+        //             prev_edge->next_edge = edge->next_edge;
 
-                // Deleta a aresta
-                delete edge;
-                node_2->number_of_edges--;
-                break;
-            }
+        //         // Deleta a aresta
+        //         delete edge;
+        //         node_2->number_of_edges--;
+        //         break;
+        //     }
 
-            prev_edge = edge;
-        }
+        //     prev_edge = edge;
+        // }
+        aux_remove_edge(node_2, node_position_1);
     }
 
     // Decrementa o número de arestas
@@ -160,17 +154,7 @@ void Graph::add_edge(size_t node_id_1, size_t node_id_2, float weight)
     // Procura os nós
     Node *node_1 = nullptr;
     Node *node_2 = nullptr;
-    for(Node *aux = this->first_node; aux != nullptr; aux = aux->next_node)
-    {
-        if(aux->id == node_id_1)
-            node_1 = aux;
-        if(aux->id == node_id_2)
-            node_2 = aux;
-
-        // Checa se os nós foram encontrados
-        if(node_1 != nullptr && node_2 != nullptr)
-            break;
-    }
+    search_nodes(node_1, node_id_1, node_2, node_id_2);
 
     // Checa se os nós foram encontrados
     if(node_1 == nullptr || node_2 == nullptr)
@@ -266,23 +250,13 @@ int Graph::connected(size_t node_id_1, size_t node_id_2)
     // Procura os nós
     Node *node_1 = nullptr;
     Node *node_2 = nullptr;
-    for(Node *aux = this->first_node; aux != nullptr; aux = aux->next_node)
-    {
-        if(aux->id == node_id_1)
-            node_1 = aux;
-        if(aux->id == node_id_2)
-            node_2 = aux;
-
-        // Checa se os nós foram encontrados
-        if(node_1 != nullptr && node_2 != nullptr)
-            break;
-    }
+    search_nodes(node_1, node_id_1, node_2, node_id_2);
 
     // Checa se os nós foram encontrados
     if(node_1 == nullptr || node_2 == nullptr)
     {
         std::cout << "Error: nodes not found\n";
-        return;
+        return -1;
     }
 
     // Checa se os nós estão conectados
@@ -293,4 +267,46 @@ int Graph::connected(size_t node_id_1, size_t node_id_2)
     }
 
     return 0;
+}
+
+
+
+//* Funções auxiliares
+void Graph::search_nodes(Node *node_1, size_t node_id_1, Node *node_2, size_t node_id_2)
+{
+    for(Node *aux = this->first_node; aux != nullptr; aux = aux->next_node)
+    {
+        if(aux->id == node_id_1)
+            node_1 = aux;
+        if(aux->id == node_id_2 && node_id_2 != -1)
+            node_2 = aux;
+
+        // Checa se os nós foram encontrados
+        if(node_1 != nullptr && (node_2 != nullptr || node_id_2 == -1))
+            break;
+    }
+}
+
+void Graph::aux_remove_edge(Node* node, size_t node_position)
+{
+    Edge *prev_edge = nullptr;
+    for(Edge *edge = node->first_edge; edge != nullptr; edge = edge->next_edge)
+    {
+        if(edge->target_id == node_position)
+        {
+            // Caso seja a primeira aresta
+            if(prev_edge == nullptr)
+                node->first_edge = edge->next_edge;
+            // Caso não seja a primeira aresta, atualiza o ponteiro da aresta anterior para o próximo	
+            else
+                prev_edge->next_edge = edge->next_edge;
+
+            // Deleta a aresta
+            delete edge;
+            node->number_of_edges--;
+            break;
+        }
+
+        prev_edge = edge;
+    }
 }
