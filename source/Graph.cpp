@@ -80,7 +80,7 @@ void Graph::add_edge(size_t node_id_1, size_t node_id_2, float weight)
     if(this->connected(node_id_1, node_id_2))
     {
         std::cout << "Error: nodes are already connected\n";
-        exit(1);
+        return;
     }
 
     // Procura os nós
@@ -92,13 +92,17 @@ void Graph::add_edge(size_t node_id_1, size_t node_id_2, float weight)
             node_1 = aux;
         if(aux->id == node_id_2)
             node_2 = aux;
+
+        // Checa se os nós foram encontrados
+        if(node_1 != nullptr && node_2 != nullptr)
+            break;
     }
 
     // Checa se os nós foram encontrados
     if(node_1 == nullptr || node_2 == nullptr)
     {
         std::cout << "Error: nodes not found\n";
-        exit(1);
+        return;
     }
 
     // Cria a aresta
@@ -173,5 +177,34 @@ void Graph::print_graph(std::ofstream& output_file)
 
 int Graph::connected(size_t node_id_1, size_t node_id_2)
 {
+    // Procura os nós
+    Node *node_1 = nullptr;
+    Node *node_2 = nullptr;
+    for(Node *aux = this->first_node; aux != nullptr; aux = aux->next_node)
+    {
+        if(aux->id == node_id_1)
+            node_1 = aux;
+        if(aux->id == node_id_2)
+            node_2 = aux;
+
+        // Checa se os nós foram encontrados
+        if(node_1 != nullptr && node_2 != nullptr)
+            break;
+    }
+
+    // Checa se os nós foram encontrados
+    if(node_1 == nullptr || node_2 == nullptr)
+    {
+        std::cout << "Error: nodes not found\n";
+        return;
+    }
+
+    // Checa se os nós estão conectados
+    for(Edge *edge = node_1->first_edge; edge != nullptr; edge = edge->next_edge)
+    {
+        if(edge->target_id == node_id_2)
+            return 1;
+    }
+    
     return 0;
 }
