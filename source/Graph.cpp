@@ -272,14 +272,13 @@ int Graph::connected(size_t node_id_1, size_t node_id_2)
 
 
 //* Funções auxiliares
-void Graph::search_nodes(Node *node_1, size_t node_id_1, Node *node_2, int node_id_2)
+void Graph::search_nodes(Node *node_1, size_t node_id_1, Node *node_2, size_t node_id_2)
 {
     for(Node *aux = this->first_node; aux != nullptr; aux = aux->next_node)
     {
         if(aux->id == node_id_1)
             node_1 = aux;
-        if(node_id_2 != -1) // Se o segundo nó for -1, não faz sentido compará-lo com size_t
-        if(aux->id == (size_t)node_id_2)
+        if(aux->id == node_id_2 && node_id_2 != -1)
             node_2 = aux;
 
         // Checa se os nós foram encontrados

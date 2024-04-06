@@ -36,7 +36,7 @@ private:
 
 
     //* Funções Auxiliares
-    void search_nodes(Node *node_1, size_t node_id_1, Node *node_2 = nullptr, int node_id_2 = -1);
+    void search_nodes(Node *node_1, size_t node_id_1, Node *node_2 = nullptr, size_t node_id_2 = -1);
     void aux_remove_edge(Node *node_1, size_t node_id_2);
 };
 
