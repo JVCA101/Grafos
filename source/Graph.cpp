@@ -68,6 +68,80 @@ void Graph::remove_node(size_t node_position)
 
 void Graph::remove_edge(size_t node_position_1, size_t node_position_2)
 {
+    // Procura os nós
+    Node *node_1 = nullptr;
+    Node *node_2 = nullptr;
+
+    for(Node *aux = this->first_node; aux != nullptr; aux = aux->next_node)
+    {
+        if(aux->id == node_position_1)
+            node_1 = aux;
+        if(aux->id == node_position_2)
+            node_2 = aux;
+
+        // Checa se os nós foram encontrados
+        if(node_1 != nullptr && node_2 != nullptr)
+            break;
+    }
+
+    // Checa se os nós foram encontrados
+    if(node_1 == nullptr || node_2 == nullptr)
+    {
+        std::cout << "Error: nodes not found\n";
+        return;
+    }
+
+    // Remove a aresta do nó 1
+    Edge *prev_edge = nullptr;
+    for(Edge *edge = node_1->first_edge; edge != nullptr; edge = edge->next_edge)
+    {
+        if(edge->target_id == node_position_2)
+        {
+             // Caso seja a primeira aresta
+            if(prev_edge == nullptr)
+                node_1->first_edge = edge->next_edge;
+            // Caso não seja a primeira aresta, atualiza o ponteiro da aresta anterior para o próximo	
+            else
+                prev_edge->next_edge = edge->next_edge;
+
+            // Deleta a aresta
+            delete edge;
+            node_1->number_of_edges--;
+            break;
+        }
+
+        prev_edge = edge;
+    }
+
+    // Checa se o grafo é direcionado, caso não seja, remove a aresta do nó 2
+    if(!this->directed)
+    {
+        prev_edge = nullptr;
+        for(Edge *edge = node_2->first_edge; edge != nullptr; edge = edge->next_edge)
+        {
+            if(edge->target_id == node_position_1)
+            {
+                // Caso seja a primeira aresta
+                if(prev_edge == nullptr)
+                    node_2->first_edge = edge->next_edge;
+                // Caso não seja a primeira aresta, atualiza o ponteiro da aresta anterior para o próximo	
+                else
+                    prev_edge->next_edge = edge->next_edge;
+
+                // Deleta a aresta
+                delete edge;
+                node_2->number_of_edges--;
+                break;
+            }
+
+            prev_edge = edge;
+        }
+    }
+
+    // Decrementa o número de arestas
+    this->number_of_edges--;
+
+
 }
 
 void Graph::add_node(size_t node_id, float weight)
@@ -205,6 +279,6 @@ int Graph::connected(size_t node_id_1, size_t node_id_2)
         if(edge->target_id == node_id_2)
             return 1;
     }
-    
+
     return 0;
 }
