@@ -76,6 +76,67 @@ void Graph::add_node(size_t node_id, float weight)
 
 void Graph::add_edge(size_t node_id_1, size_t node_id_2, float weight)
 {
+    //Checa se não tem conexão entre os nós
+    if(this->connected(node_id_1, node_id_2))
+    {
+        std::cout << "Error: nodes are already connected\n";
+        exit(1);
+    }
+
+    // Procura os nós
+    Node *node_1 = nullptr;
+    Node *node_2 = nullptr;
+    for(Node *aux = this->first_node; aux != nullptr; aux = aux->next_node)
+    {
+        if(aux->id == node_id_1)
+            node_1 = aux;
+        if(aux->id == node_id_2)
+            node_2 = aux;
+    }
+
+    // Checa se os nós foram encontrados
+    if(node_1 == nullptr || node_2 == nullptr)
+    {
+        std::cout << "Error: nodes not found\n";
+        exit(1);
+    }
+
+    // Cria a aresta
+    Edge *new_edge = new Edge;
+
+    // Inicializa aresta para apontar para o nó 2
+    new_edge->target_id = node_id_2;
+
+    // Checa se a aresta é ponderada
+    if(this->weighted_edges) new_edge->weight = weight;
+
+    // Adiciona a aresta ao nó 1
+    new_edge->next_edge = node_1->first_edge;
+    node_1->first_edge = new_edge;
+    node_1->number_of_edges++;
+
+    // Checa se o grafo é direcionado, caso não seja, cria a aresta no nó 2
+    if(!this->directed)
+    { 
+        // Recria a aresta
+        new_edge = new Edge;
+
+        // Inicializa aresta para apontar para o nó 1
+        new_edge->target_id = node_id_1;
+
+        // Checa se a aresta é ponderada
+        if(this->weighted_edges) new_edge->weight = weight;
+
+        // Adiciona a aresta ao nó 2
+        new_edge->next_edge = node_2->first_edge;
+        node_2->first_edge = new_edge;
+        node_2->number_of_edges++;
+    }
+
+
+    // Incrementa o número de arestas
+    this->number_of_edges++;
+
 }
 
 void Graph::print_graph()
