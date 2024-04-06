@@ -139,7 +139,27 @@ void Graph::remove_edge(size_t node_position_1, size_t node_position_2)
 }
 
 void Graph::add_node(size_t node_id, float weight)
-{
+{   //considerando weight = 0 e node id não contida no grafo
+    Node *p   = new Node;
+    p->weight = weight;
+    p->id     = node_id;
+    if (this->number_of_nodes == 0)
+    {
+        p->next_node     = nullptr;
+        p->previous_node = nullptr;
+        first_node = p;
+        last_node = p;
+    }
+    else
+    {
+        Node *aux = last_node;
+        aux->next_node   = p;
+        p->previous_node = aux;
+        p->next_node = nullptr;
+        last_node = p;
+    }
+    //considerar verificar se o nó foi adicionado com sucesso 
+    number_of_nodes++; 
 }
 
 void Graph::add_edge(size_t node_id_1, size_t node_id_2, float weight)
