@@ -18,7 +18,7 @@ public:
     void add_node(size_t node_id, float weight = 0.0);
     void add_edge(size_t node_id_1, size_t node_id_2, float weight = 0.0);
     void print_graph(std::ofstream& output_file);
-    void print_graph();
+    void print_graph() noexcept;
 
     int connected(size_t node_id_1, size_t node_id_2);
 

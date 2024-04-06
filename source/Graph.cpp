@@ -10,12 +10,12 @@ Graph::Graph(std::ifstream& instance)
 
     // inicializa variáveis
     std::string line, string_node_1, string_node_2, string_weight;
-    size_t node_id_1, node_id_2, num_nodes(0);
+    size_t node_id_1, node_id_2;
     float weight;
 
     // lê o número de nós
     std::getline(instance, line);
-    num_nodes = std::stoi(line);
+    const size_t num_nodes = std::stoi(line);
 
 
     // lê os nós e arestas
@@ -217,8 +217,20 @@ void Graph::add_edge(size_t node_id_1, size_t node_id_2, float weight)
 
 }
 
-void Graph::print_graph()
+void Graph::print_graph() noexcept
 {
+    // Verifica se o grafo é direcionado ou não e atribui o valor correto para o arquivo
+    char edge_direction = '-';
+    if(this->directed)
+        edge_direction = '>';
+    
+    std::cout << "graph " << this->name << "{\n";
+
+    // Escreve os nós e arestas no terminal
+    for(auto node = this->first_node; node != this->last_node; node = node->next_node)
+        for(size_t i = 0; i < node->number_of_edges; i++)
+            std::cout << "  " << node->id << " -" << edge_direction << " " << node->first_edge[i].target_id << "\n";
+    std::cout << "\n}\n";
 }
 
 void Graph::print_graph(std::ofstream& output_file)
