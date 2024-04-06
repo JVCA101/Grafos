@@ -36,8 +36,8 @@ private:
 
 
     //* Funções Auxiliares
-    void search_nodes(Node *node_1, size_t node_id_1, Node *node_2 = nullptr, size_t node_id_2 = -1);
-    void aux_remove_edge(Node *node_1, size_t node_id_2);
+    void search_nodes(Node *node_1, const size_t node_id_1, Node *node_2 = nullptr, const int node_id_2 = -1);
+    void aux_remove_edge(Node *const node, const size_t node_position);
 };
 
 #endif  //GRAPH_HPP
