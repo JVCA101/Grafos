@@ -24,6 +24,7 @@ public:
 
     int connected(size_t node_id_1, size_t node_id_2);
 
+
 private:
     std::string name;
     size_t number_of_nodes;

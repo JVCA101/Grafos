@@ -66,6 +66,7 @@ Graph::~Graph()
     Node *aux = this->first_node;
     Node *next = nullptr;
 
+    // Remove os nós
     while(aux != nullptr)
     {
         next = aux->next_node;
@@ -78,6 +79,14 @@ Graph::~Graph()
         delete aux;
         aux = next;
     }
+
+    // Reseta as variáveis
+    this->first_node = nullptr;
+    this->last_node = nullptr;
+
+    this->number_of_edges = 0;
+    this->number_of_nodes = 0;
+
 }
 
 void Graph::remove_node(size_t node_position)
@@ -117,10 +126,20 @@ void Graph::remove_node(size_t node_position)
     }
 
     // Remove o nó
+    // Caso o nó seja o primeiro
     if(prev_node == nullptr)
         this->first_node = node->next_node;
-    else
+        this->first_node->previous_node = nullptr;
+    else 
+    // Caso o nó seja o último
+    if(node->next_node == nullptr){
+        prev_node->next_node = nullptr;
+        this->last_node = prev_node;
+    }
+    else {
         prev_node->next_node = node->next_node;
+        node->next_node->previous_node = prev_node;
+    }
 
     delete node;
     this->number_of_nodes--;
