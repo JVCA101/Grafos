@@ -63,10 +63,67 @@ Graph::Graph(std::string name, bool directed, bool weighted_edges, bool weighted
 
 Graph::~Graph()
 {
+    Node *aux = this->first_node;
+    Node *next = nullptr;
+
+    while(aux != nullptr)
+    {
+        next = aux->next_node;
+        // Remove as arestas do nó
+        for(Edge *edge = aux->first_edge; edge != nullptr; edge = aux->first_edge)
+        {
+            aux->first_edge = edge->next_edge;
+            delete edge;
+        }
+        delete aux;
+        aux = next;
+    }
 }
 
 void Graph::remove_node(size_t node_position)
 {
+    // Procura o nó
+    Node *prev_node = nullptr;
+    Node *node = nullptr;
+    for(node = this->first_node; node != nullptr; node = node->next_node)
+    {
+        if(node->id == node_position)
+            break;
+        prev_node = node;
+    }
+
+    // Checa se o nó foi encontrado
+    if(node == nullptr)
+    {
+        std::cout << "Error: node not found\n";
+        return;
+    }
+
+    // Se for um grafo direcionado, remove as arestas que apontam para o nó
+    if(this->directed)
+    {
+        for(Node *aux = this->first_node; aux != nullptr; aux = aux->next_node)
+            aux_remove_edge(aux, node_position);
+    }
+
+    // Remove as arestas que saem do nó
+    for(Edge *edge = node->first_edge; edge != nullptr; edge = node->first_edge)
+    {
+        node->first_edge = edge->next_edge;
+        delete edge;
+
+        // Decrementa o número de arestas
+        this->number_of_edges--;
+    }
+
+    // Remove o nó
+    if(prev_node == nullptr)
+        this->first_node = node->next_node;
+    else
+        prev_node->next_node = node->next_node;
+
+    delete node;
+    this->number_of_nodes--;
 }
 
 void Graph::remove_edge(size_t node_position_1, size_t node_position_2)
@@ -141,8 +198,14 @@ void Graph::remove_edge(size_t node_position_1, size_t node_position_2)
 void Graph::add_node(size_t node_id, float weight)
 {   //considerando weight = 0 e node id não contida no grafo
     Node *p   = new Node;
-    p->weight = weight;
-    p->id     = node_id;
+
+    // Checa se grafo é ponderado
+    if(this->weighted_nodes){
+        p->weight = weight;
+    }
+
+    p->id = node_id;
+
     if (this->number_of_nodes == 0)
     {
         p->next_node     = nullptr;
