@@ -42,7 +42,7 @@ private:
     void search_nodes(Node *node_1, const size_t node_id_1, Node *node_2 = nullptr, const int node_id_2 = -1);
     void aux_remove_edge(Node *const node, const size_t node_position);
     void aux_basic_deep_search(Node *node);
-    void aux_deep_search_connected_components(Node *node, int *connection_mark);
+    void aux_deep_search_connected_components(Node *node, int connection_mark);
 };
 
 #endif  //GRAPH_HPP

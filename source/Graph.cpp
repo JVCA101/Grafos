@@ -441,7 +441,7 @@ void Graph::basic_deep_search()
     for(Node *node = this->first_node; node != nullptr; node = node->next_node)
     {
         if(!node->visited)
-            aux_basic_deep_search(node, visited);
+            aux_basic_deep_search(node);
     }
 
 
@@ -456,7 +456,8 @@ void Graph::aux_basic_deep_search(Node *node)
     for(Edge *edge = node->first_edge; edge != nullptr; edge = edge->next_edge)
     {
         // Procura o nó
-        for(Node *aux = this->first_node; aux != nullptr; aux = aux->next_node)
+        Node* aux;
+        for(aux = this->first_node; aux != nullptr; aux = aux->next_node)
         {
             if(aux->id == edge->target_id)
                 break;
@@ -496,7 +497,8 @@ void Graph::aux_deep_search_connected_components(Node *node, int connection_mark
     for(Edge *edge = node->first_edge; edge != nullptr; edge = edge->next_edge)
     {
         // Procura o nó
-        for(Node *aux = this->first_node; aux != nullptr; aux = aux->next_node)
+        Node* aux;
+        for(aux = this->first_node; aux != nullptr; aux = aux->next_node)
         {
             if(aux->id == edge->target_id)
                 break;
