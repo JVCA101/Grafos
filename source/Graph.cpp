@@ -126,22 +126,38 @@ void Graph::remove_node(size_t node_position)
     }
 
     // Remove o nó
-    // Caso o nó seja o primeiro
-    if(prev_node == nullptr)
-        this->first_node = node->next_node;
-        this->first_node->previous_node = nullptr;
-    else 
-    // Caso o nó seja o último
-    if(node->next_node == nullptr){
-        prev_node->next_node = nullptr;
-        this->last_node = prev_node;
-    }
-    else {
-        prev_node->next_node = node->next_node;
-        node->next_node->previous_node = prev_node;
-    }
 
-    delete node;
+    // Caso só tenha um nó
+    if(this->number_of_nodes == 1)
+    {
+        delete node;
+        this->first_node = nullptr;
+        this->last_node = nullptr;
+    }
+    else
+    {
+        // Caso o nó seja o primeiro
+        if(prev_node == nullptr)
+        {
+            this->first_node = node->next_node;
+            this->first_node->previous_node = nullptr;
+        }
+        else
+        // Caso o nó seja o último
+        if(node->next_node == nullptr)
+        {
+            prev_node->next_node = nullptr;
+            this->last_node = prev_node;
+        }
+        else
+        {
+            prev_node->next_node = node->next_node;
+            node->next_node->previous_node = prev_node;
+        }
+
+        delete node;
+    }
+   
     this->number_of_nodes--;
 }
 
@@ -412,5 +428,82 @@ void Graph::aux_remove_edge(Node *const node, const size_t node_position)
         }
 
         prev_edge = edge;
+    }
+}
+
+void Graph::basic_deep_search()
+{
+    // Marca todos os nós como não visitados
+    for(Node *node = this->first_node; node != nullptr; node = node->next_node)
+        node->visited = false;
+
+    // Chama a função recursiva
+    for(Node *node = this->first_node; node != nullptr; node = node->next_node)
+    {
+        if(!node->visited)
+            aux_basic_deep_search(node, visited);
+    }
+
+
+}
+
+void Graph::aux_basic_deep_search(Node *node)
+{
+    // Marca o nó como visitado
+    node->visited = true;
+
+    // Chama a função recursiva para os nós adjacentes
+    for(Edge *edge = node->first_edge; edge != nullptr; edge = edge->next_edge)
+    {
+        // Procura o nó
+        for(Node *aux = this->first_node; aux != nullptr; aux = aux->next_node)
+        {
+            if(aux->id == edge->target_id)
+                break;
+        }
+
+        // Chama a função recursiva se o nó não foi visitado
+        if(!aux->visited)
+            aux_basic_deep_search(aux);
+    }
+}
+
+void Graph::deep_search_connected_components(){
+    // Marca todos os nós como não conectados
+    for(Node *node = this->first_node; node != nullptr; node = node->next_node)
+        node->connection_mark = 0;
+
+    int component = 0;
+
+    // Chama a função recursiva
+    for(Node *node = this->first_node; node != nullptr; node = node->next_node)
+    {
+        if(node->connection_mark == 0)
+        {
+            component++;
+            aux_deep_search_connected_components(node, component);
+        }
+    }
+}
+
+
+void Graph::aux_deep_search_connected_components(Node *node, int connection_mark)
+{
+    // Marca o nó como visitado
+    node->connection_mark = connection_mark;
+
+    // Chama a função recursiva para os nós adjacentes
+    for(Edge *edge = node->first_edge; edge != nullptr; edge = edge->next_edge)
+    {
+        // Procura o nó
+        for(Node *aux = this->first_node; aux != nullptr; aux = aux->next_node)
+        {
+            if(aux->id == edge->target_id)
+                break;
+        }
+
+        // Chama a função recursiva se o nó não foi visitado
+        if(aux->connection_mark == 0)
+            aux_deep_search_connected_components(aux, connection_mark);
     }
 }
