@@ -378,6 +378,24 @@ void Graph::deep_search_connected_components(){
     }
 }
 
+Graph Graph::subgraph_vertice_induced(const std::vector<Node> nodes)
+{
+    // Cria um novo grafo
+    Graph subgraph(this->name + "_subgraph", this->directed, this->weighted_edges, this->weighted_nodes);
+
+    // Adiciona os nós ao novo grafo
+    // for(Node *node = nodes; node != nullptr; node = node->next_node)
+    for(auto node : nodes)
+        subgraph.add_node(node.id, node.weight);
+
+    // Adiciona as arestas entre os nós ao novo grafo
+    for(Node *node = subgraph.first_node; node != nullptr; node = node->next_node)
+        for(Edge *edge = node->first_edge; edge != nullptr; edge = edge->next_edge)
+            if(this->connected(node->id, edge->target_id))
+                subgraph.add_edge(node->id, edge->target_id, edge->weight);
+
+    return subgraph;
+}
 
 
 //* Funções auxiliares

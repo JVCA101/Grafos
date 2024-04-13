@@ -21,8 +21,10 @@ public:
     void add_edge(size_t node_id_1, size_t node_id_2, float weight = 0.0);
     void print_graph(std::ofstream& output_file);
     void print_graph() noexcept;
+
     void basic_deep_search();
     void deep_search_connected_components();
+    Graph subgraph_vertice_induced(std::vector<Node> nodes);
 
     int connected(size_t node_id_1, size_t node_id_2);
 
