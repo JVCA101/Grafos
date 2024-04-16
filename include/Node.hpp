@@ -9,6 +9,8 @@ struct Node
     size_t number_of_edges;
     size_t id;
     float  weight;
+    bool   visited;
+    int   connection_mark;
     Edge  *first_edge;
     Node  *next_node;
     Node  *previous_node;
