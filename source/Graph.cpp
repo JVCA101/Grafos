@@ -98,7 +98,6 @@ void Graph::remove_node(size_t node_position)
     {
         if(node->id == node_position)
             break;
-        prev_node = node;
     }
 
     // Checa se o nó foi encontrado
@@ -107,6 +106,8 @@ void Graph::remove_node(size_t node_position)
         std::cout << "Error: node not found\n";
         return;
     }
+    
+    prev_node = node->previous_node;
 
     // Se for um grafo direcionado, remove as arestas que apontam para o nó
     if(this->directed)
