@@ -21,21 +21,27 @@ public:
     void add_edge(size_t node_id_1, size_t node_id_2, float weight = 0.0);
     void print_graph(std::ofstream& output_file);
     void print_graph() noexcept;
+    int connected(size_t node_id_1, size_t node_id_2);
 
+
+    // deep_search.cpp
     void basic_deep_search();
     void deep_search_connected_components();
     Graph subgraph_vertice_induced(std::vector<Node> nodes);
 
-    int connected(size_t node_id_1, size_t node_id_2);
+
+    // arvore_geradora_minima.cpp
+    Graph kruskal();
+    Graph prim();
 
 
     //* Getters
     std::vector<Node> get_nodes();
     std::vector<Edge> get_edges();
     const std::string get_name() const noexcept;
-    const bool is_directed() const noexcept;
-    const bool weighted_edges() const noexcept;
-    const bool weighted_nodes() const noexcept;
+    bool is_directed() const noexcept;
+    bool has_weighted_edges() const noexcept;
+    bool has_weighted_nodes() const noexcept;
 
 
 private:
