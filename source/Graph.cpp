@@ -399,7 +399,52 @@ Graph Graph::subgraph_vertice_induced(const std::vector<Node> nodes)
 }
 
 
+
+
 //* Funções auxiliares
+
+std::vector<Node> Graph::get_nodes()
+{
+    std::vector<Node> nodes;
+
+    for(Node *node = this->first_node; node != nullptr; node = node->next_node)
+        nodes.push_back(*node);
+
+    return nodes;
+}
+
+std::vector<Edge> Graph::get_edges()
+{
+    std::vector<Edge> edges;
+
+    for(Node *node = this->first_node; node != nullptr; node = node->next_node)
+        for(Edge *edge = node->first_edge; edge != nullptr; edge = edge->next_edge)
+            edges.push_back(*edge);
+
+    return edges;
+}
+
+const std::string Graph::get_name() const noexcept
+{
+    return this->name;
+}
+
+const bool Graph::is_directed() const noexcept
+{
+    return this->directed;
+}
+
+const bool Graph::weighted_edges() const noexcept
+{
+    return this->weighted_edges;
+}
+
+const bool Graph::weighted_nodes() const noexcept
+{
+    return this->weighted_nodes;
+}
+
+
 void Graph::search_nodes(Node *node_1, const size_t node_id_1, Node *node_2, const int node_id_2)
 {
     for(Node *aux = this->first_node; aux != nullptr; aux = aux->next_node)

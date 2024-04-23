@@ -10,7 +10,7 @@ public:
     /*Assinatura dos métodos básicos para o funcionamento da classe*/
 
 
-    // Funções Principais
+    //* Funções Principais
     Graph(std::ifstream& instance);
     Graph(std::string name, bool directed = false, bool weighted_edges = false, bool weighted_nodes = false);
     ~Graph();
@@ -27,6 +27,15 @@ public:
     Graph subgraph_vertice_induced(std::vector<Node> nodes);
 
     int connected(size_t node_id_1, size_t node_id_2);
+
+
+    //* Getters
+    std::vector<Node> get_nodes();
+    std::vector<Edge> get_edges();
+    const std::string get_name() const noexcept;
+    const bool is_directed() const noexcept;
+    const bool weighted_edges() const noexcept;
+    const bool weighted_nodes() const noexcept;
 
 
 private:
