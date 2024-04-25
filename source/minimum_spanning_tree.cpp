@@ -1,7 +1,7 @@
-#include "Graph.hpp"
+#include "../include/Graph.hpp"
 
 
-Graph Graph::kruskal()
+Graph Graph::minimum_spanning_tree_by_kruskal()
 {
     std::vector<Edge> edges = this->get_edges();
     std::sort(edges.begin(), edges.end(), [](Edge& edge_1, Edge& edge_2) {
@@ -13,7 +13,7 @@ Graph Graph::kruskal()
     return agm;
 }
 
-Graph Graph::prim()
+Graph Graph::minimum_spanning_tree_by_prim()
 {
     Graph agm(this->name, this->directed, this->weighted_edges, this->weighted_nodes);
 

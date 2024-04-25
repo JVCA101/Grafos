@@ -30,9 +30,9 @@ public:
     Graph subgraph_vertice_induced(std::vector<Node> nodes);
 
 
-    // arvore_geradora_minima.cpp
-    Graph kruskal();
-    Graph prim();
+    // minimum_spanning_tree.cpp
+    Graph minimum_spanning_tree_by_kruskal();
+    Graph minimum_spanning_tree_by_prim();
 
 
     //* Getters
