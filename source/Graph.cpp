@@ -349,6 +349,23 @@ int Graph::connected(size_t node_id_1, size_t node_id_2)
 
 
 //* Funções auxiliares
+Node Graph::get_node(size_t node_id)
+{
+    Node *node = nullptr;
+    for(node = this->first_node; node != nullptr; node = node->next_node)
+    {
+        if(node->id == node_id)
+            break;
+    }
+
+    if(node == nullptr)
+    {
+        std::cout << "Error: node not found\n";
+        exit(1);
+    }
+
+    return *node;
+}
 
 std::vector<Node> Graph::get_nodes()
 {

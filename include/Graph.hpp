@@ -42,6 +42,7 @@ public:
     bool is_directed() const noexcept;
     bool has_weighted_edges() const noexcept;
     bool has_weighted_nodes() const noexcept;
+    Node get_node(size_t node_id);
 
 
 private:
