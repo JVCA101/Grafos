@@ -35,39 +35,42 @@ Graph Graph::minimum_spanning_tree_by_kruskal()
         Edge edge = edges.front();
         edges.erase(edges.begin());
         
+        // Auxiliar variables for the nodes
+        Node* node_1 = agm.get_node(edge.origin_id);
+        Node* node_2 = agm.get_node(edge.target_id);
+        size_t tree_id_1 = node_1->tree_id;
+        size_t tree_id_2 = node_2->tree_id;
+
         // Se os nós da aresta não são da mesma subárvore, adiciona a aresta ao AGM
-        if (!agm.get_node(edge.node_1).tree_id == 0 || !agm.get_node(edge.node_2).tree_id == 0)
+        if (!tree_id_1 == 0 || !tree_id_2 == 0)
         {
-            agm.add_edge(edge.node_1, edge.node_2, edge.weight);
+            agm.add_edge(edge.origin_id, edge.target_id, edge.weight);
             added_edges++;
             
             // Se não estão em nenhum árvore, cria uma nova árvore
-            if (!agm.get_node(edge.node_1).tree_id == 0 && !agm.get_node(edge.node_2).tree_id == 0)
+            if (!tree_id_1 == 0 && !tree_id_2 == 0)
             {
-                agm.get_node(edge.node_1).tree_id = agm.get_node(edge.node_2).tree_id = agm.get_number_of_nodes();
+                tree_id_1 = agm.get_number_of_nodes();
+                tree_id_2 = agm.get_number_of_nodes();
             }
+
             // Se um dos nós está em uma árvore, adiciona o outro nó a mesma árvore
-            else if (agm.get_node(edge.node_1).tree_id == 0)
+            else if (tree_id_1 == 0)
             {
-                agm.get_node(edge.node_1).tree_id = agm.get_node(edge.node_2).tree_id;
+                tree_id_1 = tree_id_2;
             }
-            else if (agm.get_node(edge.node_2).tree_id == 0)
+            else if (tree_id_2 == 0)
             {
-                agm.get_node(edge.node_2).tree_id = agm.get_node(edge.node_1).tree_id;
+                tree_id_2 = tree_id_1;
             }
             // Se ambos estão em árvores diferentes, junta as árvores
             else
             {
-                int tree_id_1 = agm.get_node(edge.node_1).tree_id;
-                int tree_id_2 = agm.get_node(edge.node_2).tree_id;
                 for (auto node : agm.get_nodes())
-                {
                     if (node.tree_id == tree_id_2)
-                    {
                         node.tree_id = tree_id_1;
-                    }
-                }
             }
+        }
     }
 
     // Retorna o AGM

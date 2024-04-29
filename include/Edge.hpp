@@ -7,6 +7,7 @@ struct Edge
 {
     Edge  *next_edge;
     float  weight;
+    size_t origin_id;
     size_t target_id;
 };
 

@@ -349,7 +349,7 @@ int Graph::connected(size_t node_id_1, size_t node_id_2)
 
 
 //* Funções auxiliares
-Node Graph::get_node(size_t node_id)
+Node* Graph::get_node(size_t node_id)
 {
     Node *node = nullptr;
     for(node = this->first_node; node != nullptr; node = node->next_node)
@@ -364,7 +364,7 @@ Node Graph::get_node(size_t node_id)
         exit(1);
     }
 
-    return *node;
+    return node;
 }
 
 std::vector<Node> Graph::get_nodes()
@@ -406,6 +406,11 @@ bool Graph::has_weighted_edges() const noexcept
 bool Graph::has_weighted_nodes() const noexcept
 {
     return this->weighted_nodes;
+}
+
+const size_t Graph::get_number_of_nodes() const noexcept
+{
+    return this->number_of_nodes;
 }
 
 
