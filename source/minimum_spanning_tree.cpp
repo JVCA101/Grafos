@@ -4,82 +4,92 @@
 Graph Graph::minimum_spanning_tree_by_kruskal()
 {   
 
-    // Ordena as arestas do grafo
+    // Get all edges and sort them by weight
     std::vector<Edge> edges = this->get_edges();
     std::sort(edges.begin(), edges.end(), [](Edge& edge_1, Edge& edge_2) {
-        return edge_1.weight < edge_2.weight;  // Ordena as arestas pelo peso
+        return edge_1.weight < edge_2.weight;
     });
 
-    // Cria um novo grafo para o AGM
-    Graph agm(this->name, this->directed, this->weighted_edges, this->weighted_nodes);
+    // Create a new graph to store the MST(Minimum Spanning Tree)
+    Graph mst(this->name, this->directed, this->weighted_edges, this->weighted_nodes);
     
-    // Copia os nós do grafo original para o AGM sem as arestas
+    // Copy all nodes to MST without edges and set the tree_id to 1
     for (auto node : this->get_nodes())
     {
-        agm.add_node(node.id, node.weight);
+        mst.add_node(node.id, node.weight);
+        mst.get_node(node.id)->tree_id = 1;
     }
 
-    // Contador de arestas adicionadas ao AGM
+    // Counter for the added edges on MST
     int added_edges = 0;
 
-    // Inicia os IDs das árvores do Nós como 1 de AGM como fora da árvore
-    for (auto node : agm.get_nodes())
-    {
-        node.tree_id = 1;
-    }
+    // Auxiliar variables
+    Node *node_1 = nullptr;
+    Node *node_2 = nullptr;
+    size_t tree_id_1=0, tree_id_2=0;
+    Edge edge;
+
     
-    // Percorre as arestas ordenadas e adiciona ao AGM caso não forme ciclo
-    while (added_edges < agm.get_number_of_nodes() - 1)
+    // Traverse all edges sorted and add to MST if it doesn't create a cycle
+    while (added_edges < mst.get_number_of_nodes() - 1)
     {
-        // Pega a próxima aresta e a remove em seguida
-        Edge edge = edges.front();
+        // Get the edge at front and remove it from the vector
+        edge = edges[0];
         edges.erase(edges.begin());
         
-        // Auxiliar variables for the nodes
-        Node* node_1 = agm.get_node(edge.origin_id);
-        Node* node_2 = agm.get_node(edge.target_id);
-        size_t tree_id_1 = node_1->tree_id;
-        size_t tree_id_2 = node_2->tree_id;
+        // Get the nodes of the edge
+        node_1 = mst.get_node(edge.origin_id);
+        node_2 = mst.get_node(edge.target_id);
+        tree_id_1 = node_1->tree_id;
+        tree_id_2 = node_2->tree_id;
 
-        // Se os nós da aresta não são da mesma subárvore, adiciona a aresta ao AGM
+        // If the nodes of the edge are not in the same subtree, add the edge to the MST
         if (!tree_id_1 == 0 || !tree_id_2 == 0)
-        {
-            agm.add_edge(edge.origin_id, edge.target_id, edge.weight);
-            added_edges++;
-            
-            // Se não estão em nenhum árvore, cria uma nova árvore
-            if (!tree_id_1 == 0 && !tree_id_2 == 0)
-            {
-                tree_id_1 = agm.get_number_of_nodes();
-                tree_id_2 = agm.get_number_of_nodes();
-            }
-
-            // Se um dos nós está em uma árvore, adiciona o outro nó a mesma árvore
-            else if (tree_id_1 == 0)
-            {
-                tree_id_1 = tree_id_2;
-            }
-            else if (tree_id_2 == 0)
-            {
-                tree_id_2 = tree_id_1;
-            }
-            // Se ambos estão em árvores diferentes, junta as árvores
-            else
-            {
-                for (auto node : agm.get_nodes())
-                    if (node.tree_id == tree_id_2)
-                        node.tree_id = tree_id_1;
-            }
-        }
+            add_edge_to_mst(mst, edge, tree_id_1, tree_id_2, added_edges);
     }
 
-    // Retorna o AGM
-    return agm;
+    return mst;
 }
 
 Graph Graph::minimum_spanning_tree_by_prim()
 {
-    Graph agm(this->name, this->directed, this->weighted_edges, this->weighted_nodes);
+    Graph mst(this->name, this->directed, this->weighted_edges, this->weighted_nodes);
 
-    return agm;
+    return mst;
+}
+
+
+
+//* ------------------------------------------
+//* ------------Auxiliar Functions------------
+//* ------------------------------------------
+
+void add_edge_to_mst(Graph& mst, Edge& edge, size_t& tree_id_1, size_t& tree_id_2, int& added_edges)
+{
+    mst.add_edge(edge.origin_id, edge.target_id, edge.weight);
+    added_edges++;
+    
+    // If the nodes are not in any tree, create a new tree
+    if (!tree_id_1 == 0 && !tree_id_2 == 0)
+    {
+        tree_id_1 = mst.get_number_of_nodes();
+        tree_id_2 = mst.get_number_of_nodes();
+    }
+
+    // If one of the nodes is in a tree, add the other node to the same tree
+    else if (tree_id_1 == 0)
+    {
+        tree_id_1 = tree_id_2;
+    }
+    else if (tree_id_2 == 0)
+    {
+        tree_id_2 = tree_id_1;
+    }
+    // If both nodes are in different trees, merge the trees
+    else
+    {
+        for (auto node : mst.get_nodes())
+            if (node.tree_id == tree_id_2)
+                node.tree_id = tree_id_1;
+    }
 }
