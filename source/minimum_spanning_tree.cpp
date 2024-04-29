@@ -1,5 +1,6 @@
 #include "../include/Graph.hpp"
 
+void add_edge_to_mst(Graph& mst, Edge& edge, size_t& tree_id_1, size_t& tree_id_2, int& added_edges);
 
 Graph Graph::minimum_spanning_tree_by_kruskal()
 {   
