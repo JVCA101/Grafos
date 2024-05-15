@@ -367,6 +367,32 @@ Node* Graph::get_node(size_t node_id)
     return node;
 }
 
+Edge* Graph::get_edge(size_t node_id_1, size_t node_id_2)
+{
+    // Procura os nós
+    Node *node_1 = nullptr;
+    Node *node_2 = nullptr;
+    search_nodes(node_1, node_id_1, node_2, node_id_2);
+
+    // Checa se os nós foram encontrados
+    if(node_1 == nullptr || node_2 == nullptr)
+    {
+        std::cout << "Error: nodes not found\n";
+        exit(1);
+    }
+
+    // Checa se os nós estão conectados
+    for(Edge *edge = node_1->first_edge; edge != nullptr; edge = edge->next_edge)
+    {
+        if(edge->target_id == node_id_2)
+            return edge;
+    }
+
+    std::cout << "Error: nodes are not connected\n";
+    exit(1);
+
+}
+
 std::vector<Node> Graph::get_nodes()
 {
     std::vector<Node> nodes;

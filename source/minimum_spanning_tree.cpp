@@ -55,8 +55,46 @@ Graph Graph::minimum_spanning_tree_by_kruskal()
 
 Graph Graph::minimum_spanning_tree_by_prim()
 {
+    std::vector<Edge> edges = this->get_edges();
+    Edge edge_min = edges[0];
+
     Graph mst(this->name, this->directed, this->weighted_edges, this->weighted_nodes);
 
+    for(auto node : this->get_nodes())
+    {
+        mst.add_node(node.id, node.weight);
+        mst.get_node(node.id)->key = std::numeric_limits<float>::infinity();
+        mst.get_node(node.id)->tree_id = 0;
+    }
+    
+    mst.add_edge(edge_min.origin_id, edge_min.target_id, edge_min.weight);
+    mst.get_node(edge_min.origin_id)->tree_id = 1;
+    mst.get_node(edge_min.target_id)->tree_id = 1;
+    
+    float weight_origin, weight_target;
+
+    for(auto node : mst.get_nodes())
+    {
+        if(node.tree_id)
+            continue;
+
+        weight_origin = weight_of_connection(this, *mst.get_node(edge_min.origin_id), node);
+        weight_target = weight_of_connection(this, *mst.get_node(edge_min.target_id), node);
+
+        node.key = std::min(weight_origin, weight_target);
+    }
+
+    size_t cont = 0;
+    weight_origin = weight_target = 0;
+
+    while(cont < mst.get_number_of_nodes() - 2)
+    {
+        inicialize_j(mst);
+
+        cont++;
+    }
+
+    
     return mst;
 }
 
@@ -88,4 +126,32 @@ void add_edge_to_mst(Graph& mst, Edge& edge, size_t& tree_id_1, size_t& tree_id_
                 node.tree_id = tree_id_1;
         }
 
+}
+
+float weight_of_connection(Graph& graph, Node& node_1, Node& node_2)
+{
+    if(graph.connected(node_1, node_2))
+        return graph.get_edge(node_1.id, node_2.id)->weight;
+
+    return std::numeric_limits<float>::infinity();
+}
+
+Node inicialize_j(Graph& graph)
+{
+    Node j;
+
+    // find j
+    for(auto node : graph.get_nodes())
+        if(node.tree_id != 0)
+        {
+            j = node;
+            break;
+        }
+
+    // find the smallest key
+    for(auto node : graph.get_nodes())
+        if(node.tree_id != 0 && node.key < j.key)
+            j = node;
+
+    return j;
 }
