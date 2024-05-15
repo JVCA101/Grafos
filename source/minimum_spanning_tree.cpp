@@ -78,10 +78,19 @@ Graph Graph::minimum_spanning_tree_by_prim()
         if(node.tree_id)
             continue;
 
-        weight_origin = weight_of_connection(this, *mst.get_node(edge_min.origin_id), node);
-        weight_target = weight_of_connection(this, *mst.get_node(edge_min.target_id), node);
+        weight_origin = weight_of_connection(*this, *mst.get_node(edge_min.origin_id), node);
+        weight_target = weight_of_connection(*this, *mst.get_node(edge_min.target_id), node);
 
-        node.key = std::min(weight_origin, weight_target);
+        if (weight_origin < weight_target){
+            node.key = weight_origin;
+            node.prox = mst.get_node(edge_min.origin_id);
+        }
+        else{
+            node.key = weight_target;
+            node.prox = mst.get_node(edge_min.target_id);
+        }
+
+       // node.key = std::min(weight_origin, weight_target);
     }
 
     size_t cont = 0;
@@ -89,7 +98,26 @@ Graph Graph::minimum_spanning_tree_by_prim()
 
     while(cont < mst.get_number_of_nodes() - 2)
     {
-        inicialize_j(mst);
+        Node *j = inicialize_j(mst);
+
+        mst.add_edge(j->prox->id, j->id, j->key);
+        j->tree_id = 1;
+        j->key = 0;
+
+        for(auto node : mst.get_nodes())
+        {
+            if(node.tree_id)
+                continue;
+
+            weight_origin = weight_of_connection(*this, *mst.get_node(j->id), node);
+           
+           if(weight_origin < node.key)
+           {
+               node.key = weight_origin;
+               node.prox = mst.get_node(j->id);
+           }
+
+        }
 
         cont++;
     }
@@ -130,28 +158,28 @@ void add_edge_to_mst(Graph& mst, Edge& edge, size_t& tree_id_1, size_t& tree_id_
 
 float weight_of_connection(Graph& graph, Node& node_1, Node& node_2)
 {
-    if(graph.connected(node_1, node_2))
+    if(graph.connected(node_1.id, node_2.id))
         return graph.get_edge(node_1.id, node_2.id)->weight;
 
     return std::numeric_limits<float>::infinity();
 }
 
-Node inicialize_j(Graph& graph)
+Node* inicialize_j(Graph& graph)
 {
-    Node j;
+    Node *j;
 
     // find j
     for(auto node : graph.get_nodes())
         if(node.tree_id != 0)
         {
-            j = node;
+            j = graph.get_node(node.id);
             break;
         }
 
     // find the smallest key
     for(auto node : graph.get_nodes())
-        if(node.tree_id != 0 && node.key < j.key)
-            j = node;
+        if(node.tree_id != 0 && node.key < j->key)
+            j = graph.get_node(node.id);
 
     return j;
 }
