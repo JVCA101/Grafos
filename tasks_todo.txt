@@ -22,13 +22,13 @@ Saída: o caminho mínimo entre estes dois vértices usando algoritmo de Floyd;
 // ***
 
 
-// Arvores Mínimas
+// Arvores Mínimas 
 
-5- Em andamento
+5- Feito ############
 Parâmetro: um subconjunto X de vértices do grafo;
 Saída: uma Árvore Geradora Mínima sobre o subgrafo vértice-induzido por X usando o algoritmo de Prim;
 
-6- Em andamento
+6- Feito ##############
 Parâmetro: um subconjunto X de vértices do grafo;
 Saída: uma Árvore Geradora Mínima sobre o subgrafo vértice-induzido por X usando o algoritmo de Kruskal;
 
