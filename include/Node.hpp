@@ -18,6 +18,7 @@ struct Node
     // To be used on minimum spanning tree algorithms
     int tree_id;
     float key;
+    Node *prox = nullptr;
     
 
    
