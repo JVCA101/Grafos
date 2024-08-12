@@ -35,6 +35,11 @@ public:
     Graph minimum_spanning_tree_by_prim();
 
 
+    // shortest_path.cpp
+    std::vector<Node> shortest_path_dijkstra(size_t node_id_1, size_t node_id_2);
+    std::vector<Node> shortest_path_floyd(size_t node_id_1, size_t node_id_2);
+
+
     //* Getters
     std::vector<Node> get_nodes();
     std::vector<Edge> get_edges();
