@@ -10,13 +10,13 @@ int main(int argc, char* argv[])
     //     return 1;
     // }
 
-    // std::string input_file = argv[1];
-    // std::string output_file = argv[2];
-    // bool op_direc = std::stoi(argv[3]);
-    // bool op_weight_edge = std::stoi(argv[4]);
-    // bool op_weight_node = std::stoi(argv[5]);
+    std::string input_file = argv[1];
+    std::string output_file = argv[2];
+    bool op_direc = std::stoi(argv[3]);
+    bool op_weight_edge = std::stoi(argv[4]);
+    bool op_weight_node = std::stoi(argv[5]);
 
-    // Graph graph(input_file, op_direc, op_weight_edge, op_weight_node);
+    Graph graph(input_file, op_direc, op_weight_edge, op_weight_node);
 
     return 0;
 }

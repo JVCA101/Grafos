@@ -388,8 +388,7 @@ Edge* Graph::get_edge(size_t node_id_1, size_t node_id_2)
             return edge;
     }
 
-    std::cout << "Error: nodes are not connected\n";
-    exit(1);
+    return nullptr;
 
 }
 
