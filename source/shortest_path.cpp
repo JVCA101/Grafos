@@ -51,19 +51,23 @@ std::vector<Node> Graph::shortest_path_dijkstra(size_t node_id_1, size_t node_id
 
 }
 
-std::vector<Node> Graph::shortest_path_floyd(size_t node_id_1, size_t node_id_2)
+float Graph::shortest_path_floyd(size_t node_id_1, size_t node_id_2)
 {
     //TODO
+    auto nodes = this->get_nodes();
     size_t n = this->number_of_nodes;
-    size_t A[n][n];
+    float A[n][n];
     Edge* edge;
+
+    size_t node_1 = index_of_node(node_id_1);
+    size_t node_2 = index_of_node(node_id_2);
 
     for(size_t i = 0; i < n; i++)
         for(size_t j = 0; j < n; j++)
         {
-            edge = get_edge(i+1, j+1);
+            edge = get_edge(nodes[i].id, nodes[j].id);
             if(edge == nullptr)
-                A[i][j] = std::numeric_limits<double>::infinity();
+                A[i][j] = std::numeric_limits<float>::infinity();
             else
                 A[i][j] = edge->weight * !(i == j);
         }
@@ -74,5 +78,14 @@ std::vector<Node> Graph::shortest_path_floyd(size_t node_id_1, size_t node_id_2)
             for(size_t j = 0; j < n; j++)
                 A[i][j] = std::min(A[i][j], A[i][k] + A[k][j]);
 
-    // return A;
+    return A[node_1][node_2];
+}
+
+size_t Graph::index_of_node(const size_t node_id)
+{
+    auto nodes = this->get_nodes();
+    for(size_t i = 0; i < this->number_of_nodes; i++)
+        if(nodes[i].id == node_id)
+            return i;
+    return -1;
 }

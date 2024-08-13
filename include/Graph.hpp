@@ -37,7 +37,7 @@ public:
 
     // shortest_path.cpp
     std::vector<Node> shortest_path_dijkstra(size_t node_id_1, size_t node_id_2);
-    std::vector<Node> shortest_path_floyd(size_t node_id_1, size_t node_id_2);
+    float shortest_path_floyd(size_t node_id_1, size_t node_id_2);
 
 
 
@@ -69,6 +69,7 @@ private:
     void aux_remove_edge(Node *const node, const size_t node_position);
     void aux_basic_deep_search(Node *const node);
     void aux_deep_search_connected_components(Node *const node, const int connection_mark);
+    size_t index_of_node(const size_t node_id);
 };
 
 #endif  //GRAPH_HPP
