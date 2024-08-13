@@ -1,6 +1,9 @@
 #include "../include/Graph.hpp"
 
-void add_edge_to_mst(Graph& mst, Edge& edge, size_t& tree_id_1, size_t& tree_id_2, size_t& new_tree_id, size_t& added_edges);
+void add_edge_to_mst(Graph& mst, Edge& edge, int& tree_id_1, int& tree_id_2, int& new_tree_id, size_t& added_edges);
+double weight_of_connection(Graph& graph, Node& node_1, Node& node_2);
+Node* inicialize_j(Graph& graph);
+
 
 Graph Graph::minimum_spanning_tree_by_kruskal()
 {   
@@ -27,7 +30,7 @@ Graph Graph::minimum_spanning_tree_by_kruskal()
     // Auxiliar variables
     Node *node_1 = nullptr;
     Node *node_2 = nullptr;
-    size_t tree_id_1, tree_id_2, new_tree_id=1;
+    int tree_id_1, tree_id_2, new_tree_id=1;
     size_t n_nodes = mst.get_number_of_nodes();
     Edge edge;
 
@@ -71,7 +74,7 @@ Graph Graph::minimum_spanning_tree_by_prim()
     mst.get_node(edge_min.origin_id)->tree_id = 1;
     mst.get_node(edge_min.target_id)->tree_id = 1;
     
-    float weight_origin, weight_target;
+    double weight_origin, weight_target;
 
     for(auto node : mst.get_nodes())
     {
@@ -132,7 +135,7 @@ Graph Graph::minimum_spanning_tree_by_prim()
 //* ------------Auxiliar Functions------------
 //* ------------------------------------------
 
-void add_edge_to_mst(Graph& mst, Edge& edge, size_t& tree_id_1, size_t& tree_id_2, size_t& new_tree_id, size_t& added_edges)
+void add_edge_to_mst(Graph& mst, Edge& edge, int& tree_id_1, int& tree_id_2, int& new_tree_id, size_t& added_edges)
 {
     mst.add_edge(edge.origin_id, edge.target_id, edge.weight);
     added_edges++;
@@ -156,12 +159,12 @@ void add_edge_to_mst(Graph& mst, Edge& edge, size_t& tree_id_1, size_t& tree_id_
 
 }
 
-float weight_of_connection(Graph& graph, Node& node_1, Node& node_2)
+double weight_of_connection(Graph& graph, Node& node_1, Node& node_2)
 {
     if(graph.connected(node_1.id, node_2.id))
         return graph.get_edge(node_1.id, node_2.id)->weight;
 
-    return std::numeric_limits<float>::infinity();
+    return std::numeric_limits<double>::infinity();
 }
 
 Node* inicialize_j(Graph& graph)

@@ -1,21 +1,21 @@
 // Fechos do grafo (Busca de Profundidade)
 
-1 - Em andamento
+1- Feito ###########
 Parâmetro: um Id de um vértice de um grafo direcionado;
 Saída: o fecho transitivo direto deste vértice.
 
-2- Em andamento
+2- Feito ############
 Parâmetro: um Id de um vértice de um grafo direcionado;
 Saída: o fecho transitivo indireto deste vértice.
 
 // ***
 
 // Caminho mínimo
-3-
+3- Em andamento
 Parâmetro: dois IDs de vértices do grafo;
 Saída: o caminho mínimo entre estes dois vértices usando algoritmo de Djkstra;
 
-4-
+4- Em andamento
 Parâmetro: dois IDs de vértices do grafo;
 Saída: o caminho mínimo entre estes dois vértices usando algoritmo de Floyd;
 

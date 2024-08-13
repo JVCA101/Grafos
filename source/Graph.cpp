@@ -434,7 +434,7 @@ bool Graph::has_weighted_nodes() const noexcept
     return this->weighted_nodes;
 }
 
-const size_t Graph::get_number_of_nodes() const noexcept
+size_t Graph::get_number_of_nodes() const noexcept
 {
     return this->number_of_nodes;
 }
