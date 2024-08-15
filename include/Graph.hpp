@@ -35,6 +35,8 @@ public:
     void basic_deep_search();
     void deep_search_connected_components();
     Graph subgraph_vertice_induced(std::vector<Node> nodes);
+    std::vector<Node> get_direct_transitive_closure(size_t node_id);
+    std::vector<Node> get_inverse_transitive_closure(size_t node_id);
 
 
     // minimum_spanning_tree.cpp

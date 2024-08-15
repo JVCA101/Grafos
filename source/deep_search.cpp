@@ -34,6 +34,36 @@ void Graph::deep_search_connected_components(){
     }
 }
 
+std::vector<Node> Graph::get_direct_transitive_closure(size_t node_id){
+    // using floyd to calculate
+    float** matrix = this->shortest_path_floyd_matrix();
+    std::vector<Node> transitive_closure;
+    size_t n = this->number_of_nodes;
+
+    for(size_t i = 0; i < n; i++)
+    {
+        if(matrix[node_id][i] != std::numeric_limits<float>::infinity())
+            transitive_closure.push_back(*this->get_node(i));
+    }
+
+    return transitive_closure;
+}
+
+std::vector<Node> Graph::get_inverse_transitive_closure(size_t node_id){
+    // using floyd to calculate
+    float** matrix = this->shortest_path_floyd_matrix();
+    std::vector<Node> transitive_closure;
+
+    size_t n = this->number_of_nodes;
+
+    for(size_t i = 0; i < n; i++)
+    {
+        if(matrix[i][node_id] != std::numeric_limits<float>::infinity())
+            transitive_closure.push_back(*this->get_node(i));
+    }
+    return transitive_closure;
+}
+
 Graph Graph::subgraph_vertice_induced(const std::vector<Node> nodes)
 {
     // Cria um novo grafo
