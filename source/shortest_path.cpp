@@ -16,7 +16,7 @@ std::vector<Node> Graph::shortest_path_dijkstra(size_t node_id_1, size_t node_id
     //     else
     //     {
     //         S_barra.push_back(*get_node(i));
-    //         pi.push_back(std::numeric_limits<double>::infinity());
+    //         pi.push_back(inf_d);
     //     }
     // }
 
@@ -25,7 +25,7 @@ std::vector<Node> Graph::shortest_path_dijkstra(size_t node_id_1, size_t node_id
     // {
     //     //TODO
     //     // Node *u = nullptr;
-    //     // double min = std::numeric_limits<double>::infinity();
+    //     // double min = inf_d;
     //     // for(auto node : S_barra)
     //     // {
     //     //     if(pi[node.get_id()] < min)
@@ -69,7 +69,7 @@ float Graph::shortest_path_floyd(size_t node_id_1, size_t node_id_2)
         {
             edge = get_edge(nodes[i].id, nodes[j].id);
             if(edge == nullptr)
-                A[i][j] = std::numeric_limits<float>::infinity();
+                A[i][j] = inf_f;
             else
                 A[i][j] = edge->weight * !(i == j);
         }
@@ -97,7 +97,7 @@ float** Graph::shortest_path_floyd_matrix()
         {
             edge = get_edge(nodes[i].id, nodes[j].id);
             if(edge == nullptr)
-                A[i][j] = std::numeric_limits<float>::infinity();
+                A[i][j] = inf_f;
             else
                 A[i][j] = edge->weight * !(i == j);
         }

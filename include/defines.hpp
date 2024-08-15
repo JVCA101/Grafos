@@ -10,4 +10,7 @@
 #include <vector> /* implementação do container vector e suas operações */
 #include <limits.h>
 
+#define inf_f std::numeric_limits<float>::infinity()
+#define inf_d std::numeric_limits<double>::infinity()
+
 #endif  //DEFINES_HPP

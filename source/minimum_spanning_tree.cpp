@@ -66,7 +66,7 @@ Graph Graph::minimum_spanning_tree_by_prim()
     for(auto node : this->get_nodes())
     {
         mst.add_node(node.id, node.weight);
-        mst.get_node(node.id)->key = std::numeric_limits<float>::infinity();
+        mst.get_node(node.id)->key = inf_f;
         mst.get_node(node.id)->tree_id = 0;
     }
     
@@ -164,7 +164,7 @@ double weight_of_connection(Graph& graph, Node& node_1, Node& node_2)
     if(graph.connected(node_1.id, node_2.id))
         return graph.get_edge(node_1.id, node_2.id)->weight;
 
-    return std::numeric_limits<double>::infinity();
+    return inf_d;
 }
 
 Node* inicialize_j(Graph& graph)

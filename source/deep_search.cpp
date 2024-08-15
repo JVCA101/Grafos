@@ -42,7 +42,7 @@ std::vector<Node> Graph::get_direct_transitive_closure(size_t node_id){
 
     for(size_t i = 0; i < n; i++)
     {
-        if(matrix[node_id][i] != std::numeric_limits<float>::infinity())
+        if(matrix[node_id][i] != inf_f)
             transitive_closure.push_back(*this->get_node(i));
     }
 
@@ -58,7 +58,7 @@ std::vector<Node> Graph::get_inverse_transitive_closure(size_t node_id){
 
     for(size_t i = 0; i < n; i++)
     {
-        if(matrix[i][node_id] != std::numeric_limits<float>::infinity())
+        if(matrix[i][node_id] != inf_f)
             transitive_closure.push_back(*this->get_node(i));
     }
     return transitive_closure;
