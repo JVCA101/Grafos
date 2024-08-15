@@ -44,7 +44,7 @@ Saída: a árvore dada pela ordem de caminhamento em profundidade a partir de n�
 
 // Retornos
 
-8-
+8- Feito ##############
 Parâmetro: o grafo (direcionado ou não direcionado) ponderado nas arestas
 Saída: O raio, o diâmetro, o centro e a periferia do grafo.
 
