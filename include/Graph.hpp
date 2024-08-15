@@ -4,6 +4,13 @@
 #include "Node.hpp"
 #include "defines.hpp"
 
+struct GraphAttributes {
+    float ray;
+    float diameter;
+    std::vector<Node> center;
+    std::vector<Node> periphery;
+};
+
 class Graph
 {
 public:
@@ -38,6 +45,8 @@ public:
     // shortest_path.cpp
     std::vector<Node> shortest_path_dijkstra(size_t node_id_1, size_t node_id_2);
     float shortest_path_floyd(size_t node_id_1, size_t node_id_2);
+    float** shortest_path_floyd_matrix();
+    GraphAttributes get_graph_atributes(Graph& graph);
 
 
 
