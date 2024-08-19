@@ -5,6 +5,11 @@ double weight_of_connection(Graph& graph, Node& node_1, Node& node_2);
 Node* inicialize_j(Graph& graph);
 
 
+/**
+ * @brief Retorna a árvore geradora mínima do grafo utilizando o algoritmo de Kruskal
+ * 
+ * @return Graph árvore geradora mínima
+ */
 Graph Graph::minimum_spanning_tree_by_kruskal()
 {   
 
@@ -56,6 +61,11 @@ Graph Graph::minimum_spanning_tree_by_kruskal()
     return mst;
 }
 
+/**
+ * @brief Retorna a árvore geradora mínima do grafo utilizando o algoritmo de Prim
+ * 
+ * @return Graph árvore geradora mínima
+ */
 Graph Graph::minimum_spanning_tree_by_prim()
 {
     std::vector<Edge> edges = this->get_edges();

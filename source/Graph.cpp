@@ -3,6 +3,11 @@
 
 //* Funções principais
 
+/**
+ * @brief Construct a new Graph:: Graph object from a file
+ * 
+ * @param instance file with the graph
+ */
 Graph::Graph(std::ifstream& instance)
 {
     if(!instance.is_open())
@@ -46,6 +51,14 @@ Graph::Graph(std::ifstream& instance)
 
 }
 
+/**
+ * @brief Construct a new Graph:: Graph object from name, directed, weighted edges and weighted nodes
+ * 
+ * @param name 
+ * @param directed 
+ * @param weighted_edges 
+ * @param weighted_nodes 
+ */
 Graph::Graph(std::string name, bool directed, bool weighted_edges, bool weighted_nodes)
 {
     this->name = name;
@@ -89,6 +102,11 @@ Graph::~Graph()
 
 }
 
+/**
+ * @brief Remove um nó do grafo
+ * 
+ * @param node_position posição do nó
+ */
 void Graph::remove_node(size_t node_position)
 {
     // Procura o nó
@@ -161,6 +179,12 @@ void Graph::remove_node(size_t node_position)
     this->number_of_nodes--;
 }
 
+/**
+ * @brief Remove uma aresta do grafo
+ * 
+ * @param node_position_1
+ * @param node_position_2 
+ */
 void Graph::remove_edge(size_t node_position_1, size_t node_position_2)
 {
     // Procura os nós
@@ -188,6 +212,12 @@ void Graph::remove_edge(size_t node_position_1, size_t node_position_2)
 
 }
 
+/**
+ * @brief Adiciona um nó ao grafo
+ * 
+ * @param node_id id do nó
+ * @param weight peso do nó
+ */
 void Graph::add_node(size_t node_id, float weight)
 {   //considerando weight = 0 e node id não contida no grafo
     Node *p   = new Node;
@@ -218,6 +248,13 @@ void Graph::add_node(size_t node_id, float weight)
     number_of_nodes++; 
 }
 
+/**
+ * @brief Adiciona uma aresta ao grafo
+ * 
+ * @param node_id_1 id do nó 1
+ * @param node_id_2 id do nó 2
+ * @param weight peso da aresta
+ */
 void Graph::add_edge(size_t node_id_1, size_t node_id_2, float weight)
 {
     //Checa se não tem conexão entre os nós
@@ -277,6 +314,9 @@ void Graph::add_edge(size_t node_id_1, size_t node_id_2, float weight)
 
 }
 
+/**
+ * @brief Escreve o grafo no terminal
+ */
 void Graph::print_graph() noexcept
 {
     // Verifica se o grafo é direcionado ou não e atribui o valor correto para o arquivo
@@ -293,6 +333,11 @@ void Graph::print_graph() noexcept
     std::cout << "\n}\n";
 }
 
+/**
+ * @brief Escreve o grafo em um arquivo
+ * 
+ * @param output_file arquivo de saída
+ */
 void Graph::print_graph(std::ofstream& output_file)
 {
     // Verifica se o arquivo de saída está aberto
@@ -321,6 +366,13 @@ void Graph::print_graph(std::ofstream& output_file)
 
 }
 
+/**
+ * @brief Verifica se dois nós estão conectados
+ * 
+ * @param node_id_1 primeiro id
+ * @param node_id_2 segundo id
+ * @return int 1 se estão conectados, 0 se não estão conectados, -1 se um dos nós não foi encontrado
+ */
 int Graph::connected(size_t node_id_1, size_t node_id_2)
 {
     // Procura os nós
@@ -349,6 +401,12 @@ int Graph::connected(size_t node_id_1, size_t node_id_2)
 
 
 //* Funções auxiliares
+/**
+ * @brief Retorna o ponteiro para um nó
+ * 
+ * @param node_id id do nó
+ * @return Node* ponteiro para o nó com o id passado
+ */
 Node* Graph::get_node(size_t node_id)
 {
     Node *node = nullptr;
@@ -392,6 +450,11 @@ Edge* Graph::get_edge(size_t node_id_1, size_t node_id_2)
 
 }
 
+/**
+ * @brief Retorna todos os nós do grafo
+ * 
+ * @return std::vector<Node> vetor de nós
+ */
 std::vector<Node> Graph::get_nodes()
 {
     std::vector<Node> nodes;
@@ -402,6 +465,11 @@ std::vector<Node> Graph::get_nodes()
     return nodes;
 }
 
+/**
+ * @brief Retorna todas as arestas do grafo
+ * 
+ * @return std::vector<Edge> vetor de arestas
+ */
 std::vector<Edge> Graph::get_edges()
 {
     std::vector<Edge> edges;
@@ -413,26 +481,54 @@ std::vector<Edge> Graph::get_edges()
     return edges;
 }
 
+/**
+ * @brief Retorna o nome do grafo
+ * 
+ * @return const std::string nome do grafo
+ */
 const std::string Graph::get_name() const noexcept
 {
     return this->name;
 }
 
+/**
+ * @brief Retorna se o grafo é direcionado ou não
+ * 
+ * @return true é direcionado
+ * @return false não é direcionado
+ */
 bool Graph::is_directed() const noexcept
 {
     return this->directed;
 }
 
+/**
+ * @brief Retorna se o grafo possui arestas ponderadas
+ * 
+ * @return true tem arestas ponderadas
+ * @return false não tem arestas ponderadas
+ */
 bool Graph::has_weighted_edges() const noexcept
 {
     return this->weighted_edges;
 }
 
+/**
+ * @brief Retorna se o grafo possui nós ponderados
+ * 
+ * @return true tem nós ponderados
+ * @return false não tem nós ponderados
+ */
 bool Graph::has_weighted_nodes() const noexcept
 {
     return this->weighted_nodes;
 }
 
+/**
+ * @brief Retorna o número de nós do grafo
+ * 
+ * @return size_t número de nós
+ */
 size_t Graph::get_number_of_nodes() const noexcept
 {
     return this->number_of_nodes;

@@ -1,6 +1,9 @@
 #include "../include/Graph.hpp"
 
-
+/**
+ * @brief Percorre o grafo em profundidade e marca os nós visitados
+ * 
+ */
 void Graph::basic_deep_search()
 {
     // Marca todos os nós como não visitados
@@ -16,6 +19,10 @@ void Graph::basic_deep_search()
 
 }
 
+/**
+ * @brief Percorre o grafo em profundidade e marca os nós conectados
+ * 
+ */
 void Graph::deep_search_connected_components(){
     // Marca todos os nós como não conectados
     for(Node *node = this->first_node; node != nullptr; node = node->next_node)
@@ -34,6 +41,12 @@ void Graph::deep_search_connected_components(){
     }
 }
 
+/**
+ * @brief Retorna o fecho transitivo direto de um nó
+ * 
+ * @param node_id id do nó que se deseja calcular o fecho transitivo
+ * @return std::vector<Node> vetor de nós que compõem o fecho transitivo direto
+ */
 std::vector<Node> Graph::get_direct_transitive_closure(size_t node_id){
     // using floyd to calculate
     float** matrix = this->shortest_path_floyd_matrix();
@@ -49,6 +62,12 @@ std::vector<Node> Graph::get_direct_transitive_closure(size_t node_id){
     return transitive_closure;
 }
 
+/**
+ * @brief Retorna o fecho transitivo indireto de um nó
+ * 
+ * @param node_id id do nó que se deseja calcular o fecho transitivo
+ * @return std::vector<Node> vetor de nós que compõem o fecho transitivo indireto
+ */
 std::vector<Node> Graph::get_inverse_transitive_closure(size_t node_id){
     // using floyd to calculate
     float** matrix = this->shortest_path_floyd_matrix();
@@ -64,6 +83,12 @@ std::vector<Node> Graph::get_inverse_transitive_closure(size_t node_id){
     return transitive_closure;
 }
 
+/**
+ * @brief Retorna um subgrafo induzido pelos nós passados como parâmetro
+ * 
+ * @param nodes vetor de nós que compõem o subgrafo
+ * @return Graph subgrafo induzido
+ */
 Graph Graph::subgraph_vertice_induced(const std::vector<Node> nodes)
 {
     // Cria um novo grafo

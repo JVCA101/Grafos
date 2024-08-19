@@ -1,5 +1,12 @@
 #include "../include/Graph.hpp"
 
+/**
+ * @brief Calcula o menor caminho entre dois nós utilizando o algoritmo de Dijkstra
+ * 
+ * @param node_id_1 nó de origem
+ * @param node_id_2 nó de destino
+ * @return std::vector<Node> vetor de nós que compõem o menor caminho
+ */
 std::vector<Node> Graph::shortest_path_dijkstra(size_t node_id_1, size_t node_id_2)
 {
     //TODO terminar
@@ -68,6 +75,13 @@ std::vector<Node> Graph::shortest_path_dijkstra(size_t node_id_1, size_t node_id
 
 }
 
+/**
+ * @brief Calcula o custo do menor caminho entre dois nós utilizando o algoritmo de Floyd
+ * 
+ * @param node_id_1 nó de origem
+ * @param node_id_2 nó de destino
+ * @return float custo do menor caminho
+ */
 float Graph::shortest_path_floyd(size_t node_id_1, size_t node_id_2)
 {
     //TODO
@@ -127,6 +141,12 @@ float** Graph::shortest_path_floyd_matrix()
     return A;
 }
 
+/**
+ * @brief Retorna os atributos do grafo
+ * 
+ * @param graph grafo
+ * @return GraphAttributes atributos do grafo
+ */
 GraphAttributes  Graph::get_graph_atributes(Graph& graph)
 {
     float** matrix = graph.shortest_path_floyd_matrix();
