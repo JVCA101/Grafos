@@ -2,51 +2,68 @@
 
 std::vector<Node> Graph::shortest_path_dijkstra(size_t node_id_1, size_t node_id_2)
 {
-    // std::vector<Node> S_barra;
-    // std::vector<Node> S;
-    // std::vector<double> pi;
+    //TODO terminar
+    std::vector<Node> S_barra;
+    std::vector<Node> S;
+    std::vector<float> pi;
 
-    // for(size_t i = 0; i < number_of_nodes; i++)
-    // {
-    //     if(i == node_id_1)
-    //     {
-    //         S.push_back(*get_node(i));
-    //         pi.push_back(0);
-    //     }
-    //     else
-    //     {
-    //         S_barra.push_back(*get_node(i));
-    //         pi.push_back(inf_d);
-    //     }
-    // }
+    for(size_t i = 0; i < number_of_nodes; i++)
+    {
+        if(i == node_id_1)
+        {
+            S.push_back(*get_node(i));
+            pi.push_back(0);
+        }
+        // else if()
+        // {
+        //     pi.push_back()
+        // }
+        else
+        {
+            S_barra.push_back(*get_node(i));
+            pi.push_back(inf_f);
+        }
+    }
 
 
-    // while(S_barra.size() > 0)
-    // {
-    //     //TODO
-    //     // Node *u = nullptr;
-    //     // double min = inf_d;
-    //     // for(auto node : S_barra)
-    //     // {
-    //     //     if(pi[node.get_id()] < min)
-    //     //     {
-    //     //         min = pi[node.get_id()];
-    //     //         u = get_node(node.get_id());
-    //     //     }
-    //     // }
+    while(S_barra.size() > 0)
+    {
+        // Node* u = nullptr;
+        float min = inf_f;
+        size_t id_min = INFINITY;
+        size_t counter = 0;
+        size_t index = 0;
 
-    //     // S.push_back(*u);
-    //     // S_barra.erase(std::remove(S_barra.begin(), S_barra.end(), *u), S_barra.end());
+        for(auto node : S_barra)
+        {
+            if(pi[node.id] < min)
+            {
+                min = pi[node.id];
+                id_min = node.id;
+                index = counter;
+            }
+            counter++;
+        }
 
-    //     // for(auto edge : u->get_edges())
-    //     // {
-    //     //     Node *v = get_node(edge.get_node_id());
-    //     //     if(pi[v->get_id()] > pi[u->get_id()] + edge.get_weight())
-    //     //     {
-    //     //         pi[v->get_id()] = pi[u->get_id()] + edge.get_weight();
-    //     //     }
-    //     // }
-    // }
+        float min = pi[id_min];
+        Node *u = get_node(id_min);
+
+        // S.push_back(*u);
+        S_barra.erase(S_barra.begin() + index);
+
+
+        // S.push_back(*u);
+        // S_barra.erase(std::remove(S_barra.begin(), S_barra.end(), *u), S_barra.end());
+
+        // for(auto edge : u->get_edges())
+        // {
+        //     Node *v = get_node(edge.get_node_id());
+        //     if(pi[v->get_id()] > pi[u->get_id()] + edge.get_weight())
+        //     {
+        //         pi[v->get_id()] = pi[u->get_id()] + edge.get_weight();
+        //     }
+        // }
+    }
 
 
 }
