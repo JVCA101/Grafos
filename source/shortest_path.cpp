@@ -37,7 +37,7 @@ std::vector<Node> Graph::shortest_path_dijkstra(size_t node_id_1, size_t node_id
     {
         // Node* u = nullptr;
         float min = inf_f;
-        size_t id_min = INFINITY;
+        size_t id_min = INT_MAX;
         size_t counter = 0;
         size_t index = 0;
 
@@ -52,7 +52,6 @@ std::vector<Node> Graph::shortest_path_dijkstra(size_t node_id_1, size_t node_id
             counter++;
         }
 
-        float min = pi[id_min];
         Node *u = get_node(id_min);
 
         // S.push_back(*u);
