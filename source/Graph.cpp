@@ -340,6 +340,8 @@ void Graph::add_edge(size_t node_id_1, size_t node_id_2, float weight)
     // Incrementa o número de arestas
     this->number_of_edges++;
 
+    std::cout << "Edge added successfully" << std::endl;
+
 }
 
 /**
@@ -489,6 +491,21 @@ std::vector<Node> Graph::get_nodes()
 
     for(Node *node = this->first_node; node != nullptr; node = node->next_node)
         nodes.push_back(*node);
+
+    return nodes;
+}
+
+/**
+ * @brief Retorna todos os nós do grafo
+ * 
+ * @return std::vector<Node*> vetor de ponteiros para nós
+ */
+std::vector<Node*> Graph::get_nodes_ptr()
+{
+    std::vector<Node*> nodes;
+
+    for(Node *node = this->first_node; node != nullptr; node = node->next_node)
+        nodes.push_back(node);
 
     return nodes;
 }

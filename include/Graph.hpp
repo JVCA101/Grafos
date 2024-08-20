@@ -54,6 +54,7 @@ public:
 
     //* Getters
     std::vector<Node> get_nodes();
+    std::vector<Node*> get_nodes_ptr();
     std::vector<Edge> get_edges();
     const std::string get_name() const noexcept;
     bool is_directed() const noexcept;
