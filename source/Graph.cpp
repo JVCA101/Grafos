@@ -8,13 +8,21 @@
  * 
  * @param instance file with the graph
  */
-Graph::Graph(std::ifstream& instance)
+Graph::Graph(std::ifstream& instance, bool directed, bool weighted_edges, bool weighted_nodes)
 {
     if(!instance.is_open())
     {
         std::cout << "Error: input file is not open\n";
         exit(1);
     }
+
+    this->number_of_edges = 0;
+    this->number_of_nodes = 0;
+    this->directed = directed;
+    this->weighted_edges = weighted_edges;
+    this->weighted_nodes = weighted_nodes;
+    this->first_node = nullptr;
+    this->last_node = nullptr;
 
     // inicializa variáveis
     std::string line, string_node_1, string_node_2, string_weight;
@@ -228,7 +236,8 @@ void Graph::remove_edge(size_t node_position_1, size_t node_position_2)
 void Graph::add_node(size_t node_id, float weight)
 {
     // Procura o nó
-    for(Node *aux = this->first_node; aux != nullptr; aux = aux->next_node)
+    size_t i = 0;
+    for(Node *aux = this->first_node; i < number_of_nodes; aux = aux->next_node, i++)
         if(aux->id == node_id)
             return;
     
@@ -299,8 +308,9 @@ void Graph::add_edge(size_t node_id_1, size_t node_id_2, float weight)
     new_edge->weight = weight;
 
     // Adiciona a aresta ao nó 1
-    new_edge->next_edge = node_1->first_edge;
+    auto aux = node_1->first_edge;
     node_1->first_edge = new_edge;
+    new_edge->next_edge = aux;
 
     node_1->number_of_edges++;
 
@@ -346,8 +356,8 @@ void Graph::print_graph() noexcept
 
     // Escreve os nós e arestas no terminal
     for(auto node = this->first_node; node != this->last_node; node = node->next_node)
-        for(size_t i = 0; i < node->number_of_edges; i++)
-            std::cout << "  " << node->id << " -" << edge_direction << " " << node->first_edge[i].target_id << "\n";
+        for(auto edge = node->first_edge; edge != nullptr; edge = edge->next_edge)
+            std::cout << "  " << edge->origin_id << " -" << edge_direction << " " << edge->target_id << " " << edge->weight << "\n";
     std::cout << "\n}\n";
 }
 
@@ -377,8 +387,8 @@ void Graph::print_graph(std::ofstream& output_file)
 
     // Escreve os nós e arestas no arquivo
     for(auto node = this->first_node; node != this->last_node; node = node->next_node)
-        for(size_t i = 0; i < node->number_of_edges; i++)
-            output_file << node->id << " -" << edge_direction << " " << node->first_edge[i].target_id << ";\n";
+        for(auto edge = node->first_edge; edge != nullptr; edge = edge->next_edge)
+            output_file << edge->origin_id << " -" << edge_direction << " " << edge->target_id << " " << edge->weight << ";\n";
 
     output_file << "\n}\n";
 

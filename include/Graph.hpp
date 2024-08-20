@@ -18,7 +18,7 @@ public:
 
 
     //* Funções Principais
-    Graph(std::ifstream& instance);
+    Graph(std::ifstream& instance, bool directed = false, bool weighted_edges = false, bool weighted_nodes = false);
     Graph(std::string name, bool directed = false, bool weighted_edges = false, bool weighted_nodes = false);
     ~Graph();
 
