@@ -1,3 +1,8 @@
+
+MAIN- Em andamento
+
+
+
 // Fechos do grafo (Busca de Profundidade)
 
 1- Feito ###########
@@ -15,7 +20,7 @@ Saída: o fecho transitivo indireto deste vértice.
 Parâmetro: dois IDs de vértices do grafo;
 Saída: o caminho mínimo entre estes dois vértices usando algoritmo de Djkstra;
 
-4- Em andamento
+4- Feito ############
 Parâmetro: dois IDs de vértices do grafo;
 Saída: o caminho mínimo entre estes dois vértices usando algoritmo de Floyd;
 
@@ -48,7 +53,7 @@ Saída: a árvore dada pela ordem de caminhamento em profundidade a partir de n�
 Parâmetro: o grafo (direcionado ou não direcionado) ponderado nas arestas
 Saída: O raio, o diâmetro, o centro e a periferia do grafo.
 
-9-
+9- Feito ##############
 Parâmetro: o grafo não direcionado
 Saída: O conjunto de vértices de articulação.
 
