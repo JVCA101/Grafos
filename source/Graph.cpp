@@ -446,11 +446,11 @@ Node* Graph::get_node(size_t node_id)
             break;
     }
 
-    if(node == nullptr)
-    {
-        std::cout << "Error: node not found\n";
-        exit(1);
-    }
+    // if(node == nullptr)
+    // {
+    //     std::cout << "Error: node not found\n";
+    //     exit(1);
+    // }
 
     return node;
 }
