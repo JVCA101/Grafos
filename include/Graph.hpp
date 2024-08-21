@@ -4,18 +4,18 @@
 #include "Node.hpp"
 #include "defines.hpp"
 
-struct GraphAttributes {
-    float ray;
-    float diameter;
-    std::vector<Node> center;
-    std::vector<Node> periphery;
-};
 
 class Graph
 {
 public:
     /*Assinatura dos métodos básicos para o funcionamento da classe*/
 
+    struct Attributes {
+        float ray;
+        float diameter;
+        std::vector<Node> center;
+        std::vector<Node> periphery;
+    };
 
     //* Funções Principais
     Graph(std::ifstream& instance, bool directed = false, bool weighted_edges = false, bool weighted_nodes = false);
@@ -48,7 +48,9 @@ public:
     std::vector<Node> shortest_path_dijkstra(size_t node_id_1, size_t node_id_2);
     float shortest_path_floyd(size_t node_id_1, size_t node_id_2);
     float** shortest_path_floyd_matrix();
-    GraphAttributes get_graph_atributes(Graph& graph);
+    Graph::Attributes get_attributes();
+    std::vector<Node> articulation_points();
+
 
 
 
@@ -82,6 +84,8 @@ private:
     void aux_basic_deep_search(Node *const node);
     void aux_deep_search_connected_components(Node *const node, const int connection_mark);
     size_t index_of_node(const size_t node_id);
+    void dfs_articulation(std::vector<size_t>& vis, size_t i, size_t curr);
+
 };
 
 #endif  //GRAPH_HPP

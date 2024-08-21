@@ -146,21 +146,21 @@ float** Graph::shortest_path_floyd_matrix()
  * @param graph grafo
  * @return GraphAttributes atributos do grafo
  */
-GraphAttributes  Graph::get_graph_atributes(Graph& graph)
+Graph::Attributes Graph::get_attributes()
 {
-    float** matrix = graph.shortest_path_floyd_matrix();
+    float** matrix = this->shortest_path_floyd_matrix();
     // number of nodes
-    size_t n = graph.get_number_of_nodes();
+    size_t n = this->get_number_of_nodes();
     // minimal value of matrix
-    float ray = 0;
+    float ray = inf_f;
     // maximal value of matrix
     float diameter = 0;
     
-    for (size_t i; i < n; i++)
+    for (size_t i = 0; i < n; i++)
     {
-        for (size_t j; j < n; j++)
+        for (size_t j = 0; j < n; j++)
         {
-            if (matrix[i][j] > diameter)
+            if (matrix[i][j] > diameter && matrix[i][j] != inf_f)
                 diameter = matrix[i][j];
             if (matrix[i][j] < ray)
                 ray = matrix[i][j];
@@ -171,13 +171,17 @@ GraphAttributes  Graph::get_graph_atributes(Graph& graph)
     std::vector<Node> center;
 
 
-    for (size_t i; i < n; i++)
+    for (size_t i = 0; i < n; i++)
     {
-        for (size_t j; j < n; j++){
+        for (size_t j = 0; j < n; j++){
             if (matrix[i][j] == ray){
-                center.push_back(*graph.get_node(i));
+                Node* node = this->get_node(i);
+                if(node != nullptr)
+                    center.push_back(*node);
             } else if (matrix[i][j] == diameter){
-                periphery.push_back(*graph.get_node(i));
+                Node* node = this->get_node(i);
+                if(node != nullptr)
+                    periphery.push_back(*node);
             }
         }
         
@@ -193,4 +197,47 @@ size_t Graph::index_of_node(const size_t node_id)
         if(nodes[i].id == node_id)
             return i;
     return -1;
+}
+
+
+void Graph::dfs_articulation(std::vector<size_t>& vis, size_t i, size_t curr) {
+    vis[curr] = 1;
+    Node* current_node = this->get_node(curr);
+    if(current_node == nullptr)
+        return;
+    
+    for (Edge* e = current_node->first_edge; e != nullptr; e = e->next_edge) {
+        size_t x = e->target_id;
+        if (x != i && vis[x] == 0) {
+            this->dfs_articulation(vis, i, x);
+        }
+    }
+}
+
+std::vector<Node> Graph::articulation_points() {
+    std::vector<Node> articulation_points;
+
+    // Iterando sobre todos os vértices do grafo
+    for (size_t i = 0; i < number_of_nodes; i++) {
+        size_t components = 0;
+        std::vector<size_t> vis(number_of_nodes, 0);
+
+        // Iterando sobre o grafo após remover o vértice i
+        for (size_t j = 0; j < number_of_nodes; j++) {
+            if (j != i && vis[j] == 0) {
+                components++;
+                this->dfs_articulation(vis, i, j);
+            }
+        }
+
+        // Se o número de componentes for maior que 1 após remover
+        // o vértice i, então i é um ponto de articulação.
+        if (components > 1) {
+            Node* node = get_node(i);
+            if(node != nullptr)
+                articulation_points.push_back(*node);
+        }
+    }
+
+    return articulation_points;
 }
