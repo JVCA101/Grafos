@@ -1,7 +1,7 @@
 #include "../include/Graph.hpp"
 
 
-void Graph::dfs_with_back_edges(size_t current_node, std::vector<size_t>& visited, DFS_Tree& dfs_tree, Back_edges& back_edges, size_t parent_node)
+void Graph::dfs_with_back_edges(const size_t current_node, std::vector<size_t>& visited, DFS_Tree& dfs_tree, Back_edges& back_edges, const size_t parent_node)
 {
     visited[current_node] = 1;
     Node* node = this->get_node(current_node);
@@ -25,7 +25,7 @@ void Graph::dfs_with_back_edges(size_t current_node, std::vector<size_t>& visite
     }
 }
 
-DFS_Tree Graph::depth_first_tree(size_t start_node_id, Back_edges& back_edges)
+DFS_Tree Graph::depth_first_tree(const size_t start_node_id, Back_edges& back_edges)
 {
     DFS_Tree dfs_tree;  // Armazena a árvore de DFS
     std::vector<size_t> visited(number_of_nodes, 0);  // Marca os nós visitados

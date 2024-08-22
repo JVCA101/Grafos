@@ -47,7 +47,7 @@ void Graph::deep_search_connected_components(){
  * @param node_id id do nó que se deseja calcular o fecho transitivo
  * @return std::vector<Node> vetor de nós que compõem o fecho transitivo direto
  */
-std::vector<Node> Graph::get_direct_transitive_closure(size_t node_id){
+std::vector<Node> Graph::get_direct_transitive_closure(const size_t node_id){
     // using floyd to calculate
     float** matrix = this->shortest_path_floyd_matrix();
     std::vector<Node> transitive_closure;
@@ -72,7 +72,7 @@ std::vector<Node> Graph::get_direct_transitive_closure(size_t node_id){
  * @param node_id id do nó que se deseja calcular o fecho transitivo
  * @return std::vector<Node> vetor de nós que compõem o fecho transitivo indireto
  */
-std::vector<Node> Graph::get_inverse_transitive_closure(size_t node_id){
+std::vector<Node> Graph::get_inverse_transitive_closure(const size_t node_id){
     // using floyd to calculate
     float** matrix = this->shortest_path_floyd_matrix();
     std::vector<Node> transitive_closure;

@@ -1,8 +1,5 @@
 #include "../include/Graph.hpp"
 
-void add_edge_to_mst(Graph& mst, Edge& edge, int& tree_id_1, int& tree_id_2, int& new_tree_id, size_t& added_edges);
-float weight_of_connection(Graph& graph, Node& node_1, Node& node_2);
-Node* inicialize_j(Graph& graph);
 
 
 /**
@@ -188,7 +185,7 @@ Graph Graph::minimum_spanning_tree_by_prim()
 //* ------------Auxiliar Functions------------
 //* ------------------------------------------
 
-void add_edge_to_mst(Graph& mst, Edge& edge, int& tree_id_1, int& tree_id_2, int& new_tree_id, size_t& added_edges)
+void Graph::add_edge_to_mst(Graph& mst, Edge& edge, int& tree_id_1, int& tree_id_2, int& new_tree_id, size_t& added_edges)
 {
     mst.add_edge(edge.origin_id, edge.target_id, edge.weight);
     added_edges++;
@@ -216,7 +213,7 @@ void add_edge_to_mst(Graph& mst, Edge& edge, int& tree_id_1, int& tree_id_2, int
 
 }
 
-float weight_of_connection(Graph& graph, Node& node_1, Node& node_2)
+float Graph::weight_of_connection(Graph& graph, Node& node_1, Node& node_2)
 {
     if(graph.connected(node_1.id, node_2.id))
         return graph.get_edge(node_1.id, node_2.id)->weight;
@@ -224,7 +221,7 @@ float weight_of_connection(Graph& graph, Node& node_1, Node& node_2)
     return inf_f;
 }
 
-Node* inicialize_j(Graph& graph)
+Node* Graph::inicialize_j(Graph& graph)
 {
     Node *j = nullptr;
     float min = inf_f;

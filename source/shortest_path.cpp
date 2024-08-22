@@ -7,25 +7,36 @@
  * @param node_id_2 nó de destino
  * @return std::vector<Node> vetor de nós que compõem o menor caminho
  */
-std::vector<Node> Graph::shortest_path_dijkstra(size_t node_id_1, size_t node_id_2)
+std::vector<Node> Graph::shortest_path_dijkstra(const size_t node_id_1, const size_t node_id_2)
 {
     std::vector<Node> S_barra;
     std::vector<Node> S;
 
-    std::vector<float> pi(this->number_of_nodes, inf_f);
+    std::vector<float> pi(this->number_of_nodes);
+
+    Node* node_1 = this->get_node(node_id_1);
 
     std::vector<size_t> predecessors(this->number_of_nodes, max_size_t);
 
-    pi[node_id_1] = 0;
-
     std::vector<Node> nodes = this->get_nodes();
-
-    for(auto& node : nodes)
+    for(size_t i = 0; i < nodes.size(); i++)
     {
-        if(node.id != node_id_1)
+        if(nodes[i].id == node_id_1)
         {
-            S_barra.push_back(node);
+            S.push_back(nodes[i]);
+            pi[i] = 0;
         }
+        else
+        {
+            pi[i] = weight_of_connection(*this, *node_1, nodes[i]);
+            S_barra.push_back(nodes[i]);
+        }
+    }
+
+
+    for(auto& n : S_barra)
+    {
+        std::cout << "n: " << n.id << "\n";
     }
 
     while(!S_barra.empty())
@@ -37,9 +48,11 @@ std::vector<Node> Graph::shortest_path_dijkstra(size_t node_id_1, size_t node_id
         for(size_t i = 0; i < S_barra.size(); i++)
         {
             const Node& node = S_barra[i];
-            if(pi[node.id] < min)
+            std::cout << "Node " << i << ": " << pi[i] << "\n";
+            // std::cout << "Node: " << node.id << "\npi[node]: " << pi[node.id] << "\n";
+            if(pi[i] < min)
             {
-                min = pi[node.id];
+                min = pi[i];
                 id_min = node.id;
                 index = i;
             }
@@ -48,22 +61,30 @@ std::vector<Node> Graph::shortest_path_dijkstra(size_t node_id_1, size_t node_id
 
         if(id_min == max_size_t)
             break;
+        
+
+        S_barra.erase(S_barra.begin() + index);
+
+        // for(size_t i = 0; i < pi.size(); i++)
+        //     std::cout << "pi: " << pi[i] << "\n";
+
 
         Node *u = get_node(id_min);
         std::vector<Edge*> u_edges;
+        S.push_back(*u);
+        
         for(Edge* edge = u->first_edge; edge != nullptr; edge = edge->next_edge)
             u_edges.push_back(edge);
 
 
-        S.push_back(*u);
-        S_barra.erase(S_barra.begin() + index);
+        // std::cout << "u: " << u->id << "\n";
 
         for(auto& edge : u_edges)
         {
             const size_t v_id = edge->target_id;
             const float weight = edge->weight;
 
-            std::cout << "u: " << u->id << " v: " << v_id << " weight: " << weight << std::endl;
+            // std::cout << "u: " << u->id << " v: " << v_id << " weight: " << weight << std::endl;
             
             if(pi[v_id] > pi[u->id] + weight)
             {
@@ -74,20 +95,9 @@ std::vector<Node> Graph::shortest_path_dijkstra(size_t node_id_1, size_t node_id
 
 
     }
-    std::cout << "S.size(): " << S.size() << std::endl;
-    std::vector<Node> path;
-
-    for(size_t id = node_id_2; id != max_size_t; id = predecessors[id])
-    {
-        std::cout << "id: " << id << std::endl;
-        Node* node = get_node(id);
-        if(node != nullptr)
-            path.push_back(*node);
-    }
     
-    std::reverse(path.begin(), path.end());
-
-    return path;
+    return S;
+    
 }
 
 /**
@@ -97,7 +107,7 @@ std::vector<Node> Graph::shortest_path_dijkstra(size_t node_id_1, size_t node_id
  * @param node_id_2 nó de destino
  * @return float custo do menor caminho
  */
-float Graph::shortest_path_floyd(size_t node_id_1, size_t node_id_2)
+float Graph::shortest_path_floyd(const size_t node_id_1, const size_t node_id_2)
 {
     auto nodes = this->get_nodes();
     size_t n = this->number_of_nodes;
@@ -215,15 +225,18 @@ size_t Graph::index_of_node(const size_t node_id)
 }
 
 
-void Graph::dfs_articulation(std::vector<size_t>& vis, size_t i, size_t curr) {
+void Graph::dfs_articulation(std::vector<size_t>& vis, const size_t i, const size_t curr)
+{
     vis[curr] = 1;
-    Node* current_node = this->get_node(curr);
+    Node* const current_node = this->get_node(curr);
     if(current_node == nullptr)
         return;
     
-    for (Edge* e = current_node->first_edge; e != nullptr; e = e->next_edge) {
+    for(Edge* e = current_node->first_edge; e != nullptr; e = e->next_edge)
+    {
         size_t x = e->target_id;
-        if (x != i && vis[x] == 0) {
+        if (x != i && vis[x] == 0)
+        {
             this->dfs_articulation(vis, i, x);
         }
     }

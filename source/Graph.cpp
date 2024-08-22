@@ -8,7 +8,7 @@
  * 
  * @param instance file with the graph
  */
-Graph::Graph(std::ifstream& instance, bool directed, bool weighted_edges, bool weighted_nodes)
+Graph::Graph(std::ifstream& instance, const bool directed, const bool weighted_edges, const bool weighted_nodes)
 {
     if(!instance.is_open())
     {
@@ -16,6 +16,7 @@ Graph::Graph(std::ifstream& instance, bool directed, bool weighted_edges, bool w
         exit(1);
     }
 
+    this->name = "graph";
     this->number_of_edges = 0;
     this->number_of_nodes = 0;
     this->directed = directed;
@@ -74,7 +75,7 @@ Graph::Graph(std::ifstream& instance, bool directed, bool weighted_edges, bool w
  * @param weighted_edges 
  * @param weighted_nodes 
  */
-Graph::Graph(std::string name, bool directed, bool weighted_edges, bool weighted_nodes)
+Graph::Graph(const std::string name, const bool directed, const bool weighted_edges, const bool weighted_nodes)
 {
     this->name = name;
 
@@ -122,7 +123,7 @@ Graph::~Graph()
  * 
  * @param node_position posição do nó
  */
-void Graph::remove_node(size_t node_position)
+void Graph::remove_node(const size_t node_position)
 {
     // Procura o nó
     Node *prev_node = nullptr;
@@ -200,7 +201,7 @@ void Graph::remove_node(size_t node_position)
  * @param node_position_1
  * @param node_position_2 
  */
-void Graph::remove_edge(size_t node_position_1, size_t node_position_2)
+void Graph::remove_edge(const size_t node_position_1, const size_t node_position_2)
 {
     // Procura os nós
     Node *node_1 = nullptr;
@@ -233,7 +234,7 @@ void Graph::remove_edge(size_t node_position_1, size_t node_position_2)
  * @param node_id id do nó
  * @param weight peso do nó
  */
-void Graph::add_node(size_t node_id, float weight)
+void Graph::add_node(const size_t node_id, const float weight)
 {
     // Procura o nó
     size_t i = 0;
@@ -277,7 +278,7 @@ void Graph::add_node(size_t node_id, float weight)
  * @param node_id_2 id do nó 2
  * @param weight peso da aresta
  */
-void Graph::add_edge(size_t node_id_1, size_t node_id_2, float weight)
+void Graph::add_edge(const size_t node_id_1, const size_t node_id_2, const float weight)
 {
     //Checa se não tem conexão entre os nós
     if(this->connected(node_id_1, node_id_2))
@@ -347,7 +348,7 @@ void Graph::add_edge(size_t node_id_1, size_t node_id_2, float weight)
 /**
  * @brief Escreve o grafo no terminal
  */
-void Graph::print_graph() noexcept
+void Graph::print_graph() const noexcept
 {
     // Verifica se o grafo é direcionado ou não e atribui o valor correto para o arquivo
     char edge_direction = '-';
@@ -403,7 +404,7 @@ void Graph::print_graph(std::ofstream& output_file)
  * @param node_id_2 segundo id
  * @return int 1 se estão conectados, 0 se não estão conectados, -1 se um dos nós não foi encontrado
  */
-int Graph::connected(size_t node_id_1, size_t node_id_2)
+int Graph::connected(const size_t node_id_1, const size_t node_id_2)
 {
     // Procura os nós
     Node *node_1 = nullptr;
@@ -437,7 +438,7 @@ int Graph::connected(size_t node_id_1, size_t node_id_2)
  * @param node_id id do nó
  * @return Node* ponteiro para o nó com o id passado
  */
-Node* Graph::get_node(size_t node_id)
+Node* Graph::get_node(const size_t node_id) const
 {
     for(Node* node = this->first_node; node != nullptr; node = node->next_node)
     {
@@ -448,7 +449,7 @@ Node* Graph::get_node(size_t node_id)
     return nullptr;
 }
 
-Edge* Graph::get_edge(size_t node_id_1, size_t node_id_2)
+Edge* Graph::get_edge(const size_t node_id_1, const size_t node_id_2) const
 {
     // Procura os nós
     Node *node_1 = nullptr;
@@ -478,7 +479,7 @@ Edge* Graph::get_edge(size_t node_id_1, size_t node_id_2)
  * 
  * @return std::vector<Node> vetor de nós
  */
-std::vector<Node> Graph::get_nodes()
+std::vector<Node> Graph::get_nodes() const
 {
     std::vector<Node> nodes;
 
@@ -493,7 +494,7 @@ std::vector<Node> Graph::get_nodes()
  * 
  * @return std::vector<Node*> vetor de ponteiros para nós
  */
-std::vector<Node*> Graph::get_nodes_ptr()
+std::vector<Node*> Graph::get_nodes_ptr() const
 {
     std::vector<Node*> nodes;
 
@@ -508,7 +509,7 @@ std::vector<Node*> Graph::get_nodes_ptr()
  * 
  * @return std::vector<Edge> vetor de arestas
  */
-std::vector<Edge> Graph::get_edges()
+std::vector<Edge> Graph::get_edges() const
 {
     std::vector<Edge> edges;
 
@@ -573,7 +574,7 @@ size_t Graph::get_number_of_nodes() const noexcept
 }
 
 
-void Graph::search_nodes(Node *&node_1, const size_t node_id_1, Node *&node_2, const int node_id_2)
+void Graph::search_nodes(Node *&node_1, const size_t node_id_1, Node *&node_2, const int node_id_2) const
 {
     for(Node *aux = this->first_node; aux != nullptr; aux = aux->next_node)
     {
