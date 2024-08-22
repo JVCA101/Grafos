@@ -4,6 +4,8 @@
 #include "Node.hpp"
 #include "defines.hpp"
 
+using Back_edges = std::vector<std::pair<size_t, size_t>>; // Arestas de retorno na busca em profundidade
+using DFS_Tree = std::map<size_t, std::vector<size_t>>;    // Árvore de busca em profundidade
 
 class Graph
 {
@@ -51,6 +53,8 @@ public:
     Graph::Attributes get_attributes();
     std::vector<Node> articulation_points();
 
+    // depth_search_tree.cpp
+    DFS_Tree depth_first_tree(size_t start_node_id, Back_edges& back_edges);
 
 
 
@@ -85,6 +89,8 @@ private:
     void aux_deep_search_connected_components(Node *const node, const int connection_mark);
     size_t index_of_node(const size_t node_id);
     void dfs_articulation(std::vector<size_t>& vis, size_t i, size_t curr);
+    void dfs_with_back_edges(size_t current_node, std::vector<size_t>& visited, DFS_Tree& dfs_tree, Back_edges& back_edges, size_t parent_node);
+
 
 };
 

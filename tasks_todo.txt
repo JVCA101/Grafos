@@ -41,7 +41,7 @@ Saída: uma Árvore Geradora Mínima sobre o subgrafo vértice-induzido por X us
 
 // Árvore por busca e profundidade
 
-7-
+7- Feito ##############
 Parâmetro: um ID de vértice;
 Saída: a árvore dada pela ordem de caminhamento em profundidade a partir de nó dado parâmetro, destacando as arestas de retorno;
 
