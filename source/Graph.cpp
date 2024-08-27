@@ -37,14 +37,13 @@ Graph::Graph(std::ifstream& instance, const bool directed, const bool weighted_e
 
 
     // lê os nós e arestas
-    for(size_t i = 0; i < num_nodes; i++)
+    while(std::getline(instance, line))
     {
         node_id_1 = node_id_2 = 0;
         weight = 0.0;
-        line = string_node_1 = string_node_2 = string_weight = "";
+        string_node_1 = string_node_2 = string_weight = "";
 
         // lê uma linha do arquivo e separa os valores
-        std::getline(instance, line);
         string_node_1 = line.substr(0, line.find(" "));
         line.erase(0, line.find(" ") + 1);
         string_node_2 = line.substr(0, line.find(" "));
@@ -59,7 +58,7 @@ Graph::Graph(std::ifstream& instance, const bool directed, const bool weighted_e
         std::cout << node_id_1 << " " << node_id_2 << " " << weight << std::endl;
 
 
-        // adiciona os nós e arestas ao grafo //! verificar depois
+        // adiciona os nós e arestas ao grafo
         this->add_node(node_id_1);
         this->add_node(node_id_2);
         this->add_edge(node_id_1, node_id_2, weight);
