@@ -44,8 +44,8 @@ public:
 
 
     // minimum_spanning_tree.cpp
-    Graph minimum_spanning_tree_by_kruskal();
-    Graph minimum_spanning_tree_by_prim();
+    Graph* minimum_spanning_tree_by_kruskal();
+    Graph* minimum_spanning_tree_by_prim();
 
 
     // shortest_path.cpp

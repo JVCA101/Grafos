@@ -2,6 +2,7 @@
 #include "defines.hpp"
 
 void print_menu() noexcept;
+void print_dft(DFS_Tree& dft, Back_edges& back_edges) noexcept;
 
 struct Results
 {
@@ -11,7 +12,7 @@ struct Results
     float floyd;
     DFS_Tree depth_first_tree;
     Graph::Attributes attributes;
-    Graph prim, kruskal;
+    Graph* prim, *kruskal;
 };
 
 int main(int argc, char* argv[])
@@ -35,6 +36,7 @@ int main(int argc, char* argv[])
     int op{};
     size_t id{}, id2{};
     Results results;
+    bool prim_called = false, kruskal_called = false;
 
     do
     {
@@ -92,40 +94,33 @@ int main(int argc, char* argv[])
             std::cout << "RESULTADO FLOYD: " << results.floyd << "\n";
             break;
         case 5:
+            if(prim_called)
+                delete results.prim;
             results.prim = g.minimum_spanning_tree_by_prim();
 
             std::cout << "ÁRVORE GERADORA MÍNIMA POR PRIM:\n";
-            results.prim.print_graph();
+            results.prim->print_graph();
             std::cout << "\n";
+
+            prim_called = true;
             break;
         case 6:
+            if(kruskal_called)
+                delete results.kruskal;
             results.kruskal = g.minimum_spanning_tree_by_kruskal();
 
             std::cout << "ÁRVORE GERADORA MÍNIMA POR KRUSKAL:\n";
-            results.kruskal.print_graph();
+            results.kruskal->print_graph();
             std::cout << "\n";
+
+            kruskal_called = true;
             break;
         case 7:
             std::cout << "Digite o id do nó: ";
             std::cin >> id;
             results.depth_first_tree = g.depth_first_tree(id, results.back_edges);
 
-            std::cout << "ÁRVORE DE BUSCA EM PROFUNDIDADE:\n";
-            for (DFS_Tree::const_iterator i = results.depth_first_tree.begin(); i != results.depth_first_tree.end(); ++i)
-            {
-                std::cout << i->first << " -> ";
-                for (auto& node : i->second)
-                {
-                    std::cout << node << " ";
-                }
-                std::cout << "\n";
-            }
-            std::cout << "ARESTAS DE RETORNO:\n";
-            for (auto& edge : results.back_edges)
-            {
-                std::cout << edge.first << " -> " << edge.second << "\n";
-            }
-            std::cout << "\n";
+            print_dft(results.depth_first_tree, results.back_edges);
             break;
         case 8:
             results.attributes = g.get_attributes();
@@ -161,8 +156,10 @@ int main(int argc, char* argv[])
 
     } while (op != 0);
     
-
-    
+    if(prim_called)
+        delete results.prim;
+    if(kruskal_called)
+        delete results.kruskal;
 
     return 0;
 }
@@ -179,4 +176,24 @@ void print_menu() noexcept
     std::cout << "7 - Árvore de busca em profundidade\n";
     std::cout << "8 - Raio, diâmetro, centro e periferia\n";
     std::cout << "9 - Pontos de articulação\n";
+}
+
+void print_dft(DFS_Tree& dft, Back_edges& back_edges) noexcept
+{
+    std::cout << "ÁRVORE DE BUSCA EM PROFUNDIDADE:\n";
+    for (DFS_Tree::const_iterator i = dft.begin(); i != dft.end(); ++i)
+    {
+        std::cout << i->first << " -> ";
+        for (auto& node : i->second)
+        {
+            std::cout << node << " ";
+        }
+        std::cout << "\n";
+    }
+    std::cout << "ARESTAS DE RETORNO:\n";
+    for (auto& edge : back_edges)
+    {
+        std::cout << edge.first << " -> " << edge.second << "\n";
+    }
+    std::cout << "\n";
 }
