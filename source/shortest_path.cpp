@@ -34,11 +34,6 @@ std::vector<Node> Graph::shortest_path_dijkstra(const size_t node_id_1, const si
     }
 
 
-    for(auto& n : S_barra)
-    {
-        std::cout << "n: " << n.id << "\n";
-    }
-
     while(!S_barra.empty())
     {
         float min = inf_f;
@@ -48,8 +43,6 @@ std::vector<Node> Graph::shortest_path_dijkstra(const size_t node_id_1, const si
         for(size_t i = 0; i < S_barra.size(); i++)
         {
             const Node& node = S_barra[i];
-            std::cout << "Node " << i << ": " << pi[i] << "\n";
-            // std::cout << "Node: " << node.id << "\npi[node]: " << pi[node.id] << "\n";
             if(pi[i] < min)
             {
                 min = pi[i];
@@ -65,10 +58,6 @@ std::vector<Node> Graph::shortest_path_dijkstra(const size_t node_id_1, const si
 
         S_barra.erase(S_barra.begin() + index);
 
-        // for(size_t i = 0; i < pi.size(); i++)
-        //     std::cout << "pi: " << pi[i] << "\n";
-
-
         Node *u = get_node(id_min);
         std::vector<Edge*> u_edges;
         S.push_back(*u);
@@ -77,15 +66,12 @@ std::vector<Node> Graph::shortest_path_dijkstra(const size_t node_id_1, const si
             u_edges.push_back(edge);
 
 
-        // std::cout << "u: " << u->id << "\n";
 
         for(auto& edge : u_edges)
         {
             const size_t v_id = edge->target_id;
             const float weight = edge->weight;
 
-            // std::cout << "u: " << u->id << " v: " << v_id << " weight: " << weight << std::endl;
-            
             if(pi[v_id] > pi[u->id] + weight)
             {
                 pi[v_id] = pi[u->id] + weight;

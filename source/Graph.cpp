@@ -90,6 +90,10 @@ Graph::Graph(const std::string name, const bool directed, const bool weighted_ed
     this->last_node = nullptr;
 }
 
+/**
+ * @brief Destroy the Graph:: Graph object
+ * 
+ */
 Graph::~Graph()
 {
     Node *aux = this->first_node;

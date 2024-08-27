@@ -22,6 +22,8 @@ public:
     //* Funções Principais
     Graph(std::ifstream& instance, const bool directed = false, const bool weighted_edges = false, const bool weighted_nodes = false);
     Graph(const std::string name, const bool directed = false, const bool weighted_edges = false, const bool weighted_nodes = false);
+    Graph() = default;
+    Graph(const Graph& graph) = default;
     ~Graph();
 
     void remove_node(const size_t node_id);

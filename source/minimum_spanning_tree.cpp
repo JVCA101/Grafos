@@ -38,8 +38,6 @@ Graph Graph::minimum_spanning_tree_by_kruskal()
     size_t n_nodes = mst.get_number_of_nodes();
     Edge edge;
 
-    // std::cout << "n_nodes: " << n_nodes << "\n";
-
     
     // Traverse all edges sorted and add to MST if it doesn't create a cycle
     while ((added_edges < n_nodes - 1) && (!edges.empty()))
@@ -100,8 +98,6 @@ Graph Graph::minimum_spanning_tree_by_prim()
         weight_origin = weight_of_connection(*this, *mst.get_node(edge_min.origin_id), *node);
         weight_target = weight_of_connection(*this, *mst.get_node(edge_min.target_id), *node);
 
-        std::cout << "Weight Origin: " << weight_origin << " Weight Target: " << weight_target << std::endl;
-
         if (weight_origin < weight_target){
             node->key = weight_origin;
             node->prox = mst.get_node(edge_min.origin_id);
@@ -110,8 +106,6 @@ Graph Graph::minimum_spanning_tree_by_prim()
             node->key = weight_target;
             node->prox = mst.get_node(edge_min.target_id);
         }
-
-       // node.key = std::min(weight_origin, weight_target);
     }
 
     size_t cont = 0;
@@ -209,7 +203,6 @@ void Graph::add_edge_to_mst(Graph& mst, Edge& edge, int& tree_id_1, int& tree_id
                 node->tree_id = tree_id_1;
         }
     }
-    // std::cout << "Added edge: " << edge.origin_id << " -> " << edge.target_id << std::endl;
 
 }
 
@@ -228,8 +221,6 @@ Node* Graph::inicialize_j(Graph& graph)
 
     // find j
     for(auto node : graph.get_nodes_ptr()){
-        std::cout << "Node: " << node->id << " Key: " << node->key << " Tree_id: " << node->tree_id << std::endl;
-        // if(node.tree_id != 0 && node.prox != nullptr)
         if(node->key < min && node->tree_id == 0)
         {
             min = node->key;
