@@ -345,8 +345,6 @@ void Graph::add_edge(const size_t node_id_1, const size_t node_id_2, const float
     // Incrementa o número de arestas
     this->number_of_edges++;
 
-    std::cout << "Edge added successfully" << std::endl;
-
 }
 
 /**

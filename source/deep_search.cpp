@@ -63,6 +63,10 @@ std::vector<Node> Graph::get_direct_transitive_closure(const size_t node_id){
         }
     }
 
+    // delete matrix
+    for(size_t i = 0; i < n; i++)
+        delete[] matrix[i];
+
     return transitive_closure;
 }
 
@@ -87,6 +91,10 @@ std::vector<Node> Graph::get_inverse_transitive_closure(const size_t node_id){
                 transitive_closure.push_back(*node);
         }
     }
+
+    // delete matrix
+    for(size_t i = 0; i < n; i++)
+        delete[] matrix[i];
 
     return transitive_closure;
 }

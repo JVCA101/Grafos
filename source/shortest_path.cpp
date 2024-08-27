@@ -189,17 +189,20 @@ Graph::Attributes Graph::get_attributes()
     {
         for (size_t j = 0; j < n; j++){
             if (matrix[i][j] == ray){
-                Node* node = this->get_node(i);
+                Node* node = this->get_node(i+1);
                 if(node != nullptr)
                     center.push_back(*node);
             } else if (matrix[i][j] == diameter){
-                Node* node = this->get_node(i);
+                Node* node = this->get_node(i+1);
                 if(node != nullptr)
                     periphery.push_back(*node);
             }
-        }
-        
+        }        
     }
+
+    // delete matrix
+    for(size_t i = 0; i < n; i++)
+        delete[] matrix[i];
 
     return {ray, diameter, center, periphery};
 }
