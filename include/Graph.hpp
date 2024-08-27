@@ -49,8 +49,8 @@ public:
 
 
     // shortest_path.cpp
-    std::vector<Node> shortest_path_dijkstra(const size_t node_id_1, const size_t node_id_2);
-    float shortest_path_floyd(const size_t node_id_1, const size_t node_id_2);
+    std::vector<Node> shortest_path_dijkstra(const size_t origin, const size_t destination);
+    float shortest_path_floyd(const size_t origin, const size_t destination);
     float** shortest_path_floyd_matrix();
     Graph::Attributes get_attributes();
     std::vector<Node> articulation_points();

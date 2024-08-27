@@ -3,25 +3,25 @@
 /**
  * @brief Calcula o menor caminho entre dois nós utilizando o algoritmo de Dijkstra
  * 
- * @param node_id_1 nó de origem
- * @param node_id_2 nó de destino
+ * @param origin nó de origem
+ * @param destination nó de destino
  * @return std::vector<Node> vetor de nós que compõem o menor caminho
  */
-std::vector<Node> Graph::shortest_path_dijkstra(const size_t node_id_1, const size_t node_id_2)
+std::vector<Node> Graph::shortest_path_dijkstra(const size_t origin, const size_t destination)
 {
     std::vector<Node> S_barra;
     std::vector<Node> S;
 
     std::vector<float> pi(this->number_of_nodes);
 
-    Node* node_1 = this->get_node(node_id_1);
+    Node* node_1 = this->get_node(origin);
 
     std::vector<size_t> predecessors(this->number_of_nodes, max_size_t);
 
     std::vector<Node> nodes = this->get_nodes();
     for(size_t i = 0; i < nodes.size(); i++)
     {
-        if(nodes[i].id == node_id_1)
+        if(nodes[i].id == origin)
         {
             S.push_back(nodes[i]);
             pi[i] = 0;
@@ -61,6 +61,9 @@ std::vector<Node> Graph::shortest_path_dijkstra(const size_t node_id_1, const si
         Node *u = get_node(id_min);
         std::vector<Edge*> u_edges;
         S.push_back(*u);
+
+        if(id_min == destination)
+            break;
         
         for(Edge* edge = u->first_edge; edge != nullptr; edge = edge->next_edge)
             u_edges.push_back(edge);
@@ -89,11 +92,11 @@ std::vector<Node> Graph::shortest_path_dijkstra(const size_t node_id_1, const si
 /**
  * @brief Calcula o custo do menor caminho entre dois nós utilizando o algoritmo de Floyd
  * 
- * @param node_id_1 nó de origem
- * @param node_id_2 nó de destino
+ * @param origin nó de origem
+ * @param destination nó de destino
  * @return float custo do menor caminho
  */
-float Graph::shortest_path_floyd(const size_t node_id_1, const size_t node_id_2)
+float Graph::shortest_path_floyd(const size_t origin, const size_t destination)
 {
     auto nodes = this->get_nodes();
     size_t n = this->number_of_nodes;
@@ -102,8 +105,8 @@ float Graph::shortest_path_floyd(const size_t node_id_1, const size_t node_id_2)
         A[i] = new float[n];
     Edge* edge;
 
-    size_t node_1 = index_of_node(node_id_1);
-    size_t node_2 = index_of_node(node_id_2);
+    size_t node_1 = index_of_node(origin);
+    size_t node_2 = index_of_node(destination);
 
     for(size_t i = 0; i < n; i++)
         for(size_t j = 0; j < n; j++)
