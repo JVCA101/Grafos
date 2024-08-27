@@ -32,7 +32,8 @@ void Graph::deep_search_connected_components(){
 
     // Chama a função recursiva
     for(Node *node = this->first_node; node != nullptr; node = node->next_node)
-    {
+    {   
+        // chama a função recursiva se o nó não foi visitado
         if(node->connection_mark == 0)
         {
             component++;
@@ -48,13 +49,15 @@ void Graph::deep_search_connected_components(){
  * @return std::vector<Node> vetor de nós que compõem o fecho transitivo direto
  */
 std::vector<Node> Graph::get_direct_transitive_closure(const size_t node_id){
-    // using floyd to calculate
+    // Usando floyd para calcular
     float** matrix = this->shortest_path_floyd_matrix();
     std::vector<Node> transitive_closure;
     size_t n = this->number_of_nodes;
 
+    // Adiciona os nós que o nó passado como parâmetro tem caminho
     for(size_t i = 0; i <= n; i++)
-    {
+    {   
+        // Checa se existe caminho entre os nós, percorrendo a linha
         if(matrix[node_id][i] != inf_f)
         {
             Node* node = this->get_node(i);
@@ -63,7 +66,7 @@ std::vector<Node> Graph::get_direct_transitive_closure(const size_t node_id){
         }
     }
 
-    // delete matrix
+    // deleta a matriz
     for(size_t i = 0; i < n; i++)
         delete[] matrix[i];
 
@@ -77,13 +80,15 @@ std::vector<Node> Graph::get_direct_transitive_closure(const size_t node_id){
  * @return std::vector<Node> vetor de nós que compõem o fecho transitivo indireto
  */
 std::vector<Node> Graph::get_inverse_transitive_closure(const size_t node_id){
-    // using floyd to calculate
+    // Usando floyd para calcular
     float** matrix = this->shortest_path_floyd_matrix();
     std::vector<Node> transitive_closure;
     size_t n = this->number_of_nodes;
 
+    // Adiciona os nós que tem caminho para o nó passado como parâmetro
     for(size_t i = 0; i < n; i++)
     {
+        // Checa se existe caminho entre os nós, percorrendo a coluna
         if(matrix[i][node_id] != inf_f)
         {
             Node* node = this->get_node(i);
@@ -116,8 +121,11 @@ Graph Graph::subgraph_vertice_induced(const std::vector<Node> nodes)
 
     // Adiciona as arestas entre os nós ao novo grafo
     for(Node *node = subgraph.first_node; node != nullptr; node = node->next_node)
+    // Procura o nó no grafo original
         for(Node *aux = this->first_node; aux != nullptr; aux = aux->next_node)
+        // Se o nó foi encontrado
             if(aux->id == node->id)
+            // Adiciona as arestas
                 for(Edge *edge = aux->first_edge; edge != nullptr; edge = edge->next_edge)
                     if(this->connected(aux->id, edge->target_id))
                         subgraph.add_edge(aux->id, edge->target_id, edge->weight);
@@ -188,6 +196,7 @@ void Graph::aux_deep_search_connected_components(Node *const node, const int con
         Node* aux;
         for(aux = this->first_node; aux != nullptr; aux = aux->next_node)
         {
+            // Se o nó foi encontrado
             if(aux->id == edge->target_id)
                 break;
         }

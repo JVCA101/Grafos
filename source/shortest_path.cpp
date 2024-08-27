@@ -19,8 +19,10 @@ std::vector<Node> Graph::shortest_path_dijkstra(const size_t origin, const size_
     std::vector<size_t> predecessors(this->number_of_nodes, max_size_t);
 
     std::vector<Node> nodes = this->get_nodes();
+    // Inicializa o vetor de predecessores
     for(size_t i = 0; i < nodes.size(); i++)
     {
+        // Se o nó for o nó de origem, o predecessor é ele mesmo
         if(nodes[i].id == origin)
         {
             S.push_back(nodes[i]);
@@ -28,18 +30,21 @@ std::vector<Node> Graph::shortest_path_dijkstra(const size_t origin, const size_
         }
         else
         {
+            // Se o nó não for o nó de origem, checa se ele é adjacente ao nó de origem
+            // Se for, o peso da conexão é o peso da aresta, caso contrário, o peso é infinito
             pi[i] = weight_of_connection(*this, *node_1, nodes[i]);
             S_barra.push_back(nodes[i]);
         }
     }
 
-
+    
     while(!S_barra.empty())
     {
         float min = inf_f;
         size_t id_min = max_size_t;
         size_t index = 0;
 
+        // Encontra o nó com menor valor de pi
         for(size_t i = 0; i < S_barra.size(); i++)
         {
             const Node& node = S_barra[i];
@@ -52,24 +57,29 @@ std::vector<Node> Graph::shortest_path_dijkstra(const size_t origin, const size_
         }
 
 
+        // Se não houver nó com valor de pi menor que infinito, encerra o loop
         if(id_min == max_size_t)
             break;
         
 
+        // Remove o nó com menor valor de pi de S_barra
         S_barra.erase(S_barra.begin() + index);
-
+        
         Node *u = get_node(id_min);
         std::vector<Edge*> u_edges;
         S.push_back(*u);
 
+        // Se o nó com menor valor de pi for o nó de destino, encerra o loop
         if(id_min == destination)
             break;
         
+        // Adiciona as arestas do nó com menor valor de pi ao vetor de arestas
         for(Edge* edge = u->first_edge; edge != nullptr; edge = edge->next_edge)
             u_edges.push_back(edge);
 
 
 
+        // Atualiza o valor de pi dos nós adjacentes ao nó com menor valor de pi
         for(auto& edge : u_edges)
         {
             const size_t v_id = edge->target_id;
@@ -98,6 +108,7 @@ std::vector<Node> Graph::shortest_path_dijkstra(const size_t origin, const size_
  */
 float Graph::shortest_path_floyd(const size_t origin, const size_t destination)
 {
+    // Cria a matriz de adjacência
     auto nodes = this->get_nodes();
     size_t n = this->number_of_nodes;
     float** A = new float*[n];
@@ -108,9 +119,11 @@ float Graph::shortest_path_floyd(const size_t origin, const size_t destination)
     size_t node_1 = index_of_node(origin);
     size_t node_2 = index_of_node(destination);
 
+    // Inicializa a matriz de adjacência
     for(size_t i = 0; i < n; i++)
         for(size_t j = 0; j < n; j++)
         {
+            // Se não houver aresta entre os nós, o valor é infinito
             edge = get_edge(nodes[i].id, nodes[j].id);
             if(edge == nullptr)
                 A[i][j] = inf_f;
@@ -118,10 +131,11 @@ float Graph::shortest_path_floyd(const size_t origin, const size_t destination)
                 A[i][j] = edge->weight * !(i == j);
         }
 
-
+    
     for(size_t k = 0; k < n; k++)
         for(size_t i = 0; i < n; i++)
             for(size_t j = 0; j < n; j++)
+            // Atualiza o valor da matriz de adjacência, se o caminho entre os nós for menor que o valor atual
                 A[i][j] = std::min(A[i][j], A[i][k] + A[k][j]);
 
     return A[node_1][node_2];
@@ -163,19 +177,19 @@ float** Graph::shortest_path_floyd_matrix()
 Graph::Attributes Graph::get_attributes()
 {
     float** matrix = this->shortest_path_floyd_matrix();
-    // number of nodes
+
     size_t n = this->get_number_of_nodes();
-    // minimal value of matrix
     float ray = inf_f;
-    // maximal value of matrix
     float diameter = 0;
     
     for (size_t i = 0; i < n; i++)
     {
         for (size_t j = 0; j < n; j++)
         {
+            // Procura o maior valor da matriz para encontrar o diâmetro
             if (matrix[i][j] > diameter && matrix[i][j] != inf_f)
                 diameter = matrix[i][j];
+            // Procura o menor valor da matriz para encontrar o raio
             if (matrix[i][j] < ray)
                 ray = matrix[i][j];
         }
@@ -188,6 +202,7 @@ Graph::Attributes Graph::get_attributes()
     for (size_t i = 0; i < n; i++)
     {
         for (size_t j = 0; j < n; j++){
+            // Adiciona os nós que estão na periferia e no centro
             if (matrix[i][j] == ray){
                 Node* node = this->get_node(i+1);
                 if(node != nullptr)
