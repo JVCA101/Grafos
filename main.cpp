@@ -3,6 +3,7 @@
 
 void print_menu() noexcept;
 void print_dft(DFS_Tree& dft, Back_edges& back_edges) noexcept;
+void save_dft(DFS_Tree& dft, Back_edges& back_edges, std::ofstream& output);
 
 struct Results
 {
@@ -33,6 +34,7 @@ int main(int argc, char* argv[])
     g.print_graph();
 
 
+    char save;
     int op{};
     size_t id{}, id2{};
     Results results;
@@ -56,7 +58,19 @@ int main(int argc, char* argv[])
             {
                 std::cout << node.id << " ";
             }
-            std::cout << "\n";
+
+            std::cout << "\nDeseja salvar em arquivo? (s/n): ";
+            std::cin >> save;
+            if(save == 's')
+            {
+                output << "FECHO TRANSITIVO DIRETO: \n";
+                for (auto& node : results.dir_transitive_closure)
+                {
+                    output << node.id << " ";
+                }
+                output << "\n";
+            }
+            
             break;
         case 2:
             std::cout << "Digite o id do nó: ";
@@ -69,6 +83,18 @@ int main(int argc, char* argv[])
                 std::cout << node.id << " ";
             }
             std::cout << "\n";
+
+            std::cout << "Deseja salvar em arquivo? (s/n): ";
+            std::cin >> save;
+            if(save == 's')
+            {
+                output << "FECHO TRANSITIVO INDIRETO: \n";
+                for (auto& node : results.inv_transitive_closure)
+                {
+                    output << node.id << " ";
+                }
+                output << "\n";
+            }
             break;
         case 3:
             std::cout << "Digite o id do nó 1: ";
@@ -83,6 +109,18 @@ int main(int argc, char* argv[])
                 std::cout << node.id << " ";
             }
             std::cout << "\n";
+
+            std::cout << "Deseja salvar em arquivo? (s/n): ";
+            std::cin >> save;
+            if(save == 's')
+            {
+                output << "RESULTADO DIJKSTRA: \n";
+                for (auto& node : results.dijkstra)
+                {
+                    output << node.id << " ";
+                }
+                output << "\n";
+            }
             break;
         case 4:
             std::cout << "Digite o id do nó 1: ";
@@ -92,6 +130,13 @@ int main(int argc, char* argv[])
             results.floyd = g.shortest_path_floyd(id, id2);
 
             std::cout << "RESULTADO FLOYD: " << results.floyd << "\n";
+
+            std::cout << "Deseja salvar em arquivo? (s/n): ";
+            std::cin >> save;
+            if(save == 's')
+            {
+                output << "RESULTADO FLOYD: " << results.floyd << "\n";
+            }
             break;
         case 5:
             if(prim_called)
@@ -101,6 +146,15 @@ int main(int argc, char* argv[])
             std::cout << "ÁRVORE GERADORA MÍNIMA POR PRIM:\n";
             results.prim->print_graph();
             std::cout << "\n";
+
+            std::cout << "Deseja salvar em arquivo? (s/n): ";
+            std::cin >> save;
+            if(save == 's')
+            {
+                output << "ÁRVORE GERADORA MÍNIMA POR PRIM:\n";
+                results.prim->print_graph(output);
+                output << "\n";
+            }
 
             prim_called = true;
             break;
@@ -113,6 +167,15 @@ int main(int argc, char* argv[])
             results.kruskal->print_graph();
             std::cout << "\n";
 
+            std::cout << "Deseja salvar em arquivo? (s/n): ";
+            std::cin >> save;
+            if(save == 's')
+            {
+                output << "ÁRVORE GERADORA MÍNIMA POR KRUSKAL:\n";
+                results.kruskal->print_graph(output);
+                output << "\n";
+            }
+
             kruskal_called = true;
             break;
         case 7:
@@ -121,6 +184,11 @@ int main(int argc, char* argv[])
             results.depth_first_tree = g.depth_first_tree(id, results.back_edges);
 
             print_dft(results.depth_first_tree, results.back_edges);
+
+            std::cout << "Deseja salvar em arquivo? (s/n): ";
+            std::cin >> save;
+            if(save == 's')
+                save_dft(results.depth_first_tree, results.back_edges, output);
             break;
         case 8:
             results.attributes = g.get_attributes();
@@ -129,33 +197,53 @@ int main(int argc, char* argv[])
             std::cout << "DIÂMETRO: " << results.attributes.diameter << "\n";
             std::cout << "CENTRO: \n";
             for (auto& node : results.attributes.center)
-            {
                 std::cout << node.id << " ";
-            }
             std::cout << "\n";
             std::cout << "PERIFERIA: \n";
             for (auto& node : results.attributes.periphery)
-            {
                 std::cout << node.id << " ";
-            }
             std::cout << "\n";
+
+            std::cout << "Deseja salvar em arquivo? (s/n): ";
+            std::cin >> save;
+            if(save == 's')
+            {
+                output << "RAIO: " << results.attributes.ray << "\n";
+                output << "DIÂMETRO: " << results.attributes.diameter << "\n";
+                output << "CENTRO: \n";
+                for (auto& node : results.attributes.center)
+                    output << "  " << node.id << " ";
+                output << "\n";
+                output << "PERIFERIA: \n";
+                for (auto& node : results.attributes.periphery)
+                    output << "  " << node.id << " ";
+                output << "\n";
+            }
             break;
         case 9:
             results.articulation = g.articulation_points();
 
             std::cout << "PONTOS DE ARTICULAÇÃO: \n";
             for (auto& node : results.articulation)
-            {
                 std::cout << node.id << " ";
-            }
             std::cout << "\n";
+            
+            std::cout << "Deseja salvar em arquivo? (s/n): ";
+            std::cin >> save;
+            if(save == 's')
+            {
+                output << "PONTOS DE ARTICULAÇÃO: \n";
+                for (auto& node : results.articulation)
+                    output << node.id << " ";
+                output << "\n";
+            }
             break;
         default:
             break;
         }
 
     } while (op != 0);
-    
+
     if(prim_called)
         delete results.prim;
     if(kruskal_called)
@@ -196,4 +284,24 @@ void print_dft(DFS_Tree& dft, Back_edges& back_edges) noexcept
         std::cout << edge.first << " -> " << edge.second << "\n";
     }
     std::cout << "\n";
+}
+
+void save_dft(DFS_Tree& dft, Back_edges& back_edges, std::ofstream& output)
+{
+    output << "ÁRVORE DE BUSCA EM PROFUNDIDADE:\n";
+    for (DFS_Tree::const_iterator i = dft.begin(); i != dft.end(); ++i)
+    {
+        output << i->first << " -> ";
+        for (auto& node : i->second)
+        {
+            output << node << " ";
+        }
+        output << "\n";
+    }
+    output << "ARESTAS DE RETORNO:\n";
+    for (auto& edge : back_edges)
+    {
+        output << edge.first << " -> " << edge.second << "\n";
+    }
+    output << "\n";
 }
