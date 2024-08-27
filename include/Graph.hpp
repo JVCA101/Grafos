@@ -10,7 +10,6 @@ using DFS_Tree = std::map<size_t, std::vector<size_t>>;    // Árvore de busca e
 class Graph
 {
 public:
-    /*Assinatura dos métodos básicos para o funcionamento da classe*/
 
     struct Attributes {
         float ray;
@@ -52,11 +51,11 @@ public:
     std::vector<Node> shortest_path_dijkstra(const size_t origin, const size_t destination);
     float shortest_path_floyd(const size_t origin, const size_t destination);
     float** shortest_path_floyd_matrix();
-    Graph::Attributes get_attributes();
-    std::vector<Node> articulation_points();
 
     // depth_search_tree.cpp
     DFS_Tree depth_first_tree(const size_t start_node_id, Back_edges& back_edges);
+    Graph::Attributes get_attributes();
+    std::vector<Node> articulation_points();
 
 
 

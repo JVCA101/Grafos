@@ -138,9 +138,20 @@ float Graph::shortest_path_floyd(const size_t origin, const size_t destination)
             // Atualiza o valor da matriz de adjacência, se o caminho entre os nós for menor que o valor atual
                 A[i][j] = std::min(A[i][j], A[i][k] + A[k][j]);
 
-    return A[node_1][node_2];
+    float result = A[node_1][node_2];
+
+    // Deleta a matriz de adjacência
+    for(size_t i = 0; i < n; i++)
+        delete[] A[i];
+
+    return result;
 }
 
+/**
+ * @brief Calcula a matriz de adjacência com os menores caminhos entre todos os nós utilizando o algoritmo de Floyd
+ * 
+ * @return float** matriz de adjacência com os menores caminhos
+ */
 float** Graph::shortest_path_floyd_matrix()
 {
     auto nodes = this->get_nodes();
@@ -166,113 +177,4 @@ float** Graph::shortest_path_floyd_matrix()
                 A[i][j] = std::min(A[i][j], A[i][k] + A[k][j]);
 
     return A;
-}
-
-/**
- * @brief Retorna os atributos do grafo
- * 
- * @param graph grafo
- * @return GraphAttributes atributos do grafo
- */
-Graph::Attributes Graph::get_attributes()
-{
-    float** matrix = this->shortest_path_floyd_matrix();
-
-    size_t n = this->get_number_of_nodes();
-    float ray = inf_f;
-    float diameter = 0;
-    
-    for (size_t i = 0; i < n; i++)
-    {
-        for (size_t j = 0; j < n; j++)
-        {
-            // Procura o maior valor da matriz para encontrar o diâmetro
-            if (matrix[i][j] > diameter && matrix[i][j] != inf_f)
-                diameter = matrix[i][j];
-            // Procura o menor valor da matriz para encontrar o raio
-            if (matrix[i][j] < ray)
-                ray = matrix[i][j];
-        }
-    }
-
-    std::vector<Node> periphery;
-    std::vector<Node> center;
-
-
-    for (size_t i = 0; i < n; i++)
-    {
-        for (size_t j = 0; j < n; j++){
-            // Adiciona os nós que estão na periferia e no centro
-            if (matrix[i][j] == ray){
-                Node* node = this->get_node(i+1);
-                if(node != nullptr)
-                    center.push_back(*node);
-            } else if (matrix[i][j] == diameter){
-                Node* node = this->get_node(i+1);
-                if(node != nullptr)
-                    periphery.push_back(*node);
-            }
-        }        
-    }
-
-    // delete matrix
-    for(size_t i = 0; i < n; i++)
-        delete[] matrix[i];
-
-    return {ray, diameter, center, periphery};
-}
-
-size_t Graph::index_of_node(const size_t node_id)
-{
-    auto nodes = this->get_nodes();
-    for(size_t i = 0; i < this->number_of_nodes; i++)
-        if(nodes[i].id == node_id)
-            return i;
-    return -1;
-}
-
-
-void Graph::dfs_articulation(std::vector<size_t>& vis, const size_t i, const size_t curr)
-{
-    vis[curr] = 1;
-    Node* const current_node = this->get_node(curr);
-    if(current_node == nullptr)
-        return;
-    
-    for(Edge* e = current_node->first_edge; e != nullptr; e = e->next_edge)
-    {
-        size_t x = e->target_id;
-        if (x != i && vis[x] == 0)
-        {
-            this->dfs_articulation(vis, i, x);
-        }
-    }
-}
-
-std::vector<Node> Graph::articulation_points() {
-    std::vector<Node> articulation_points;
-
-    // Iterando sobre todos os vértices do grafo
-    for (size_t i = 0; i < number_of_nodes; i++) {
-        size_t components = 0;
-        std::vector<size_t> vis(number_of_nodes, 0);
-
-        // Iterando sobre o grafo após remover o vértice i
-        for (size_t j = 0; j < number_of_nodes; j++) {
-            if (j != i && vis[j] == 0) {
-                components++;
-                this->dfs_articulation(vis, i, j);
-            }
-        }
-
-        // Se o número de componentes for maior que 1 após remover
-        // o vértice i, então i é um ponto de articulação.
-        if (components > 1) {
-            Node* node = get_node(i);
-            if(node != nullptr)
-                articulation_points.push_back(*node);
-        }
-    }
-
-    return articulation_points;
 }

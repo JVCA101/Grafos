@@ -450,6 +450,13 @@ Node* Graph::get_node(const size_t node_id) const
     return nullptr;
 }
 
+/**
+ * @brief Retorna a aresta entre dois nós
+ * 
+ * @param node_id_1 id do nó em que a aresta começa
+ * @param node_id_2 id do nó em que a aresta termina
+ * @return Edge* ponteiro para a aresta
+ */
 Edge* Graph::get_edge(const size_t node_id_1, const size_t node_id_2) const
 {
     // Procura os nós
@@ -574,7 +581,6 @@ size_t Graph::get_number_of_nodes() const noexcept
     return this->number_of_nodes;
 }
 
-
 void Graph::search_nodes(Node *&node_1, const size_t node_id_1, Node *&node_2, const int node_id_2) const
 {
     for(Node *aux = this->first_node; aux != nullptr; aux = aux->next_node)
@@ -590,4 +596,19 @@ void Graph::search_nodes(Node *&node_1, const size_t node_id_1, Node *&node_2, c
         if(node_1 != nullptr && (node_2 != nullptr || node_id_2 == -1))
             break;
     }
+}
+
+/**
+ * @brief Retorna o índice de um nó
+ * 
+ * @param node_id id do nó
+ * @return size_t índice do nó(-1 se não encontrado)
+ */
+size_t Graph::index_of_node(const size_t node_id)
+{
+    auto nodes = this->get_nodes();
+    for(size_t i = 0; i < this->number_of_nodes; i++)
+        if(nodes[i].id == node_id)
+            return i;
+    return -1;
 }
