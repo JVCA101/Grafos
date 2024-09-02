@@ -57,6 +57,11 @@ public:
     Graph::Attributes get_attributes();
     std::vector<Node> articulation_points();
 
+    // minimum_gap_partition.cpp
+    std::vector<Node> mggpp_partition_greedy();
+    std::vector<Node> mggpp_greedy_randomized_adaptive();
+    std::vector<Node> mggpp_greedy_randomized_adaptive_reactive();
+
 
 
     //* Getters
