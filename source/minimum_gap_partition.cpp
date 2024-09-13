@@ -81,11 +81,7 @@ std::vector<Node> Graph::mggpp_partition_greedy(const unsigned int p)
                     }
                         nodes.erase(std::find(nodes.begin(), nodes.end(), node_2));
 
-                } else {
-                    // pula a interação do for
-                    continue;
                 }
-
             }
         }
         
