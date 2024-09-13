@@ -612,3 +612,26 @@ size_t Graph::index_of_node(const size_t node_id)
             return i;
     return -1;
 }
+
+/**
+ * @brief 
+ * 
+ * @param node_id 
+ * @return std::vector<Edge> 
+ */
+std::vector<Edge> Graph::get_edges(const size_t node_id) const
+{
+    std::vector<Edge> edges;
+
+    Node *node = this->get_node(node_id);
+    if(node == nullptr)
+    {
+        std::cout << "Error: node not found\n";
+        exit(1);
+    }
+
+    for(Edge *edge = node->first_edge; edge != nullptr; edge = edge->next_edge)
+        edges.push_back(*edge);
+
+    return edges;
+}

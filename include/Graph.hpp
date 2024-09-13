@@ -58,9 +58,9 @@ public:
     std::vector<Node> articulation_points();
 
     // minimum_gap_partition.cpp
-    std::vector<Node> mggpp_partition_greedy();
-    std::vector<Node> mggpp_greedy_randomized_adaptive();
-    std::vector<Node> mggpp_greedy_randomized_adaptive_reactive();
+    std::vector<Node> mggpp_partition_greedy(const unsigned int p);
+    std::vector<Node> mggpp_greedy_randomized_adaptive(const unsigned int p);
+    std::vector<Node> mggpp_greedy_randomized_adaptive_reactive(const unsigned int p);
 
 
 
@@ -68,6 +68,7 @@ public:
     std::vector<Node> get_nodes() const;
     std::vector<Node*> get_nodes_ptr() const;
     std::vector<Edge> get_edges() const;
+    std::vector<Edge> get_edges(const size_t node_id) const;
     const std::string get_name() const noexcept;
     bool is_directed() const noexcept;
     bool has_weighted_edges() const noexcept;
