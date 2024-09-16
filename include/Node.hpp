@@ -14,6 +14,14 @@ struct Node
     Edge  *first_edge;
     Node  *next_node;
     Node  *previous_node;
+
+    // To be used on minimum spanning tree algorithms
+    int tree_id;
+    float key;
+    Node *prox = nullptr;
+    
+
+   
 };
 
 #endif  //GRAFO_BASICO_NODE_H
