@@ -12,83 +12,79 @@ std::vector<Node> Graph::mggpp_partition_greedy(const unsigned int p)
     }
     
     std::vector<Node> nodes = this->get_nodes();
-    std::sort(nodes.begin(), nodes.end(), [](Node& node_1, Node& node_2) -> bool {
-        // sort by degree
-        return node_1.number_of_edges < node_2.number_of_edges;
-    });
+    // std::sort(nodes.begin(), nodes.end(), [](Node& node_1, Node& node_2) -> bool {
+    //     return node_1.number_of_edges < node_2.number_of_edges;
+    // });
 
-    Partitions partitions;
+    Partitions clusters;
     for(size_t i = 0; i < p; i++)
-        partitions.push_back(std::vector<Node>());
-
-    for(auto& node : nodes)
-        node.visited = false;
-
-    unsigned int max_in_partition;
     {
-        float num_max = nodes.size() / (p*2);
-        max_in_partition = num_max + (nodes.size() % (p*2) != 0);
+        clusters.push_back(std::vector<Node>());
+
+        // add the node to the cluster
+        clusters[i].push_back(nodes.front());
+        nodes.erase(nodes.begin());
+        Node node;
+        size_t remove = 0;
+        for(size_t j = 0; j < nodes.size(); j++)
+        {
+            node = nodes[j];
+            float gap = inf_f;
+
+            if(this->connected(node.id, clusters[i][j].id) == 1 && std::abs(node.weight - clusters[i][j].weight) < gap)
+            {
+                gap = node.weight - clusters[i].front().weight;
+                remove = j;
+            }
+        }
+
+        clusters[i].push_back(node);
+        nodes.erase(nodes.begin() + remove);
     }
 
-    unsigned int cont = 0;
-    Node node_1, node_2;
+    auto gaps = std::vector<float>(p, inf_f);
+
+    // initialize gaps
+    for(size_t i = 0; i < p; i++)
+        gaps[i] = std::abs(clusters[i][0].weight - clusters[i][1].weight);
+
 
     while(!nodes.empty())
     {
-        while (partitions[cont].size() < max_in_partition){
-
-        node_1 = nodes.front();
-        nodes.erase(nodes.begin());
-
-        partitions[cont].push_back(node_1);
-
-        
-        for(size_t i = 0; i < nodes.size(); i++)
+        float gap = inf_f;
+        size_t gap_i = 0;
+        bool found = false;
+        // para cada cluster
+        for(size_t i = 0; i < clusters.size(); i++)
         {
-            if (partitions[cont].size() == max_in_partition)
+            // para cada nó do cluster
+            for(size_t j = 0; j < clusters[i].size(); j++)
             {
-                break;
-            }
-            
-            std::vector<Node> nodes_degree_1;
-            auto node = nodes[i];
-            if(this->connected(node_1.id, node.id) == 1 && node.weight < node_2.weight)
-            {
-                node_2 = node;
+                if(this->connected(nodes[0].id, clusters[i][j].id) != 1)
+                    continue;
 
-                // verifica se o node_2 tem algum nó conectado a ele que tem grau 1
-                for(auto& edge : this->get_edges(node_2.id))
-                {
-                    auto node_aux = this->get_node(edge.target_id);
-                    if(node_aux->number_of_edges == 1)
+                found = true;
+                // verifica se o gap é menor que o gap atual
+                for(size_t k = 0; k < clusters[i].size(); k++)
+                    if(std::abs(nodes[0].weight - clusters[i][k].weight) < gap)
                     {
-                        nodes_degree_1.push_back(*node_aux);
-                        break;
+                        gap_i = i;
+                        gap = std::abs(nodes[0].weight - clusters[i][k].weight);
                     }
-                }
-                
-                if(nodes_degree_1.size() <= max_in_partition - 2)
-                {
-                    // adiciona node_2 e os nós de grau 1 conectados a ele
-                    partitions[cont].push_back(node_2);
-                    for(auto& node : nodes_degree_1)
-                        partitions[cont].push_back(node);
-
-                    // remove os nós de grau 1 da lista de nós
-                    for(auto& node : nodes_degree_1)
-                    {
-                        nodes.erase(std::find(nodes.begin(), nodes.end(), node));
-                    }
-                        nodes.erase(std::find(nodes.begin(), nodes.end(), node_2));
-
-                }
             }
         }
-        
+
+        if(!found)
+        {
+            auto node = nodes[0];
+            nodes.erase(nodes.begin());
+            nodes.push_back(node);
+            continue;
         }
 
+        gaps[gap_i] = gap;
+        clusters[gap_i].push_back(nodes[0]);
     }
-
 
 }
 
