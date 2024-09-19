@@ -6,6 +6,7 @@
 
 using Back_edges = std::vector<std::pair<size_t, size_t>>; // Arestas de retorno na busca em profundidade
 using DFS_Tree = std::map<size_t, std::vector<size_t>>;    // Árvore de busca em profundidade
+using Partitions = std::vector<std::vector<Node>>;         // Minimum Gap Partition
 
 class Graph
 {
@@ -58,10 +59,9 @@ public:
     std::vector<Node> articulation_points();
 
     // minimum_gap_partition.cpp
-    std::vector<Node> mggpp_partition_greedy(const unsigned int p);
-    std::vector<Node> mggpp_greedy_randomized_adaptive(const unsigned int p);
-    std::vector<Node> mggpp_greedy_randomized_adaptive_reactive(const unsigned int p);
-
+    Partitions mggpp_partition_greedy(const unsigned int p);
+    Partitions mggpp_greedy_randomized_adaptive(const unsigned int p, const unsigned int iterations, const float alpha);
+    Partitions mggpp_greedy_randomized_adaptive_reactive(const unsigned int p);
 
 
     //* Getters
@@ -100,6 +100,9 @@ private:
     void add_edge_to_mst(Graph& mst, Edge& edge, int& tree_id_1, int& tree_id_2, int& new_tree_id, size_t& added_edges);
     float weight_of_connection(Graph& graph, Node& node_1, Node& node_2);
     Node* inicialize_j(Graph& graph);
+
+    void greedy_aux(std::vector<Node>& nodes, Partitions& clusters, bool& found, float& gap, size_t& gap_i);
+    void partition_setup(std::vector<Node>& nodes, Partitions& clusters, const unsigned int p);
 
 };
 
