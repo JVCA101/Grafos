@@ -10,6 +10,7 @@
 #include <vector> /* implementação do container vector e suas operações */
 #include <map>
 #include <limits>
+#include <sstream>
 
 #define inf_f std::numeric_limits<float>::infinity()
 #define inf_d std::numeric_limits<double>::infinity()

@@ -19,8 +19,15 @@ public:
         std::vector<Node> periphery;
     };
 
+    struct Parameters {
+        bool directed;
+        bool weighted_edges;
+        bool weighted_nodes;
+    };
+
     //* Funções Principais
     Graph(std::ifstream& instance, const bool directed = false, const bool weighted_edges = false, const bool weighted_nodes = false);
+    Graph(std::ifstream& instance, const Parameters parameters);
     Graph(const std::string name, const bool directed = false, const bool weighted_edges = false, const bool weighted_nodes = false);
     Graph() = default;
     Graph(const Graph& graph) = default;
@@ -59,9 +66,9 @@ public:
     std::vector<Node> articulation_points();
 
     // minimum_gap_partition.cpp
-    Partitions mggpp_partition_greedy(const unsigned int p);
-    Partitions mggpp_greedy_randomized_adaptive(const unsigned int p, const unsigned int iterations, const float alpha);
-    Partitions mggpp_greedy_randomized_adaptive_reactive(const unsigned int p);
+    Partitions mggpp_partition_greedy();
+    Partitions mggpp_greedy_randomized_adaptive(const unsigned int iterations, const float alpha);
+    Partitions mggpp_greedy_randomized_adaptive_reactive();
 
 
     //* Getters
@@ -87,6 +94,7 @@ private:
     bool   weighted_nodes;
     Node  *first_node;
     Node  *last_node;
+    unsigned int number_of_partitions;
 
 
     //* Funções Auxiliares
@@ -102,7 +110,7 @@ private:
     Node* inicialize_j(Graph& graph);
 
     void greedy_aux(std::vector<Node>& nodes, Partitions& clusters, bool& found, float& gap, size_t& gap_i);
-    void partition_setup(std::vector<Node>& nodes, Partitions& clusters, const unsigned int p);
+    void partition_setup(std::vector<Node>& nodes, Partitions& clusters);
 
 };
 

@@ -1,4 +1,5 @@
 #include "../include/Graph.hpp"
+#include "../include/defines.hpp"
 
 
 //* Funções principais
@@ -65,6 +66,120 @@ Graph::Graph(std::ifstream& instance, const bool directed, const bool weighted_e
     }
 
 }
+
+/**
+ * @brief Construct a new Graph:: Graph object from a file
+ * It is used on the instances for the minimum gap graph partition problem
+ */
+Graph::Graph(std::ifstream& instance, const Parameters parameters)
+{
+    if(!instance.is_open())
+    {
+        std::cout << "Error: input file is not open\n";
+        exit(1);
+    }
+
+    std::string line, string_node_1, string_node_2, string_weight, string_aux;
+    size_t node_id_1, node_id_2;
+    float weight;
+
+    std::getline(instance, line);
+
+    // lê o nome do grafo, não conta o # do começo
+    this->name = line.substr(2, line.size() - 1);
+    this->name = this->name.substr(0, this->name.size() - 5);
+    std::cout << this->name << "\n";
+
+    do
+        std::getline(instance, line);
+    while(line.substr(0, 5) != "param");
+
+    // lê o número de partições, depois de aparecer "param p := "
+    string_aux = line.substr(11, line.size() - 1);
+    string_aux = string_aux.substr(0, string_aux.size() - 2);
+
+    this->number_of_partitions = std::stoi(string_aux);
+    std::cout << this->number_of_partitions << "\n";
+
+
+    // lê o número de nós
+    std::getline(instance, line);
+    std::getline(instance, line);
+    string_aux = line.substr(2, line.size() - 10);
+
+    const size_t num_nodes = std::stoi(string_aux);
+    std::cout << num_nodes << "\n";
+
+    // lê os nós
+    std::getline(instance, line);
+    std::getline(instance, line);
+
+    // vector com os ids dos nós separados por espaço
+    std::vector<size_t> id_nodes;
+    std::istringstream iss(line);
+    string_aux = "";
+    while(iss >> string_aux)
+        id_nodes.push_back(std::stoi(string_aux));
+
+    std::getline(instance, line);
+    std::getline(instance, line);
+    std::getline(instance, line);
+    std::getline(instance, line);
+    
+    // le os pesos dos nos
+    std::vector<float> weights(num_nodes, 0.0);
+    int position_on_vector = -1;
+    float weight_aux;
+    while(line[0] != ';')
+    {
+        while (line[0] == ' ')
+            line = line.substr(1, line.size() - 1);
+        position_on_vector = std::stoi(line.substr(0, line.find(' ')));
+        string_aux = line.substr(line.find(' '));
+        string_aux = string_aux.substr(string_aux.find_first_not_of(' '));
+
+        weight_aux = std::stof(string_aux);
+
+        weights[position_on_vector-1] = weight_aux;
+
+        std::getline(instance, line);
+    }
+
+    // add nodes
+    for(size_t i = 0; i < num_nodes; i++)
+        this->add_node(id_nodes[i], weights[i]);
+
+    // lê as arestas
+    std::getline(instance, line);
+    std::getline(instance, line);
+    std::getline(instance, line);
+    std::getline(instance, line);
+    
+    while (line[0] != ';')
+    {
+        while (line.size() > 5)
+        {
+            while (line[0] == ' ')
+                line = line.substr(1, line.size() - 1);
+            string_aux = line.substr(1, line.find(')') - 1);
+            node_id_1 = std::stoi(string_aux.substr(0, string_aux.find(',')));
+            node_id_2 = std::stoi(string_aux.substr(string_aux.find(',') + 1));
+            
+            line = line.substr(line.find(')') + 1);
+
+            std::cout << node_id_1 << " " << node_id_2 << std::endl;
+
+            this->add_edge(node_id_1, node_id_2);
+        }
+        
+        std::getline(instance, line);
+    }
+    
+
+
+}
+
+
 
 /**
  * @brief Construct a new Graph:: Graph object from name, directed, weighted edges and weighted nodes

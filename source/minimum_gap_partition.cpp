@@ -1,8 +1,9 @@
 #include "../include/defines.hpp"
 #include "../include/Graph.hpp"
 
-Partitions Graph::mggpp_partition_greedy(const unsigned int p)
+Partitions Graph::mggpp_partition_greedy()
 {
+    const unsigned int p = this->number_of_partitions;
     if(p <= 1 || p >= this->number_of_nodes)
     {
         std::cout << "Invalid number of partitions" << std::endl;
@@ -15,7 +16,7 @@ Partitions Graph::mggpp_partition_greedy(const unsigned int p)
     // });
 
     Partitions clusters;
-    this->partition_setup(nodes, clusters, p);
+    this->partition_setup(nodes, clusters);
 
     auto gaps = std::vector<float>(p, inf_f);
 
@@ -47,8 +48,9 @@ Partitions Graph::mggpp_partition_greedy(const unsigned int p)
     return clusters;
 }
 
-Partitions Graph::mggpp_greedy_randomized_adaptive(const unsigned int p, const unsigned int iterations, const float alpha)
+Partitions Graph::mggpp_greedy_randomized_adaptive(const unsigned int iterations, const float alpha)
 {
+    const unsigned int p = this->number_of_partitions;
     if(p <= 1 || p >= this->number_of_nodes)
     {
         std::cout << "Invalid number of partitions" << std::endl;
@@ -78,7 +80,7 @@ Partitions Graph::mggpp_greedy_randomized_adaptive(const unsigned int p, const u
         });
 
         Partitions clusters;
-        this->partition_setup(nodes, clusters, p);
+        this->partition_setup(nodes, clusters);
 
         auto gaps = std::vector<float>(p, inf_f);
 
@@ -133,8 +135,9 @@ Partitions Graph::mggpp_greedy_randomized_adaptive(const unsigned int p, const u
 }
 
 
-Partitions Graph::mggpp_greedy_randomized_adaptive_reactive(const unsigned int p)
+Partitions Graph::mggpp_greedy_randomized_adaptive_reactive()
 {
+    const unsigned int p = this->number_of_partitions;
     return Partitions(p);
 }
 
@@ -165,9 +168,9 @@ void Graph::greedy_aux(std::vector<Node>& nodes, Partitions& clusters, bool& fou
     }
 }
 
-void Graph::partition_setup(std::vector<Node>& nodes, Partitions& clusters, const unsigned int p)
+void Graph::partition_setup(std::vector<Node>& nodes, Partitions& clusters)
 {
-    for(size_t i = 0; i < p; i++)
+    for(size_t i = 0; i < this->number_of_partitions; i++)
     {
         clusters.push_back(std::vector<Node>());
 
