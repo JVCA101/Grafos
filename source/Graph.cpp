@@ -81,7 +81,6 @@ Graph::Graph(std::ifstream& instance, const Parameters parameters)
 
     std::string line, string_node_1, string_node_2, string_weight, string_aux;
     size_t node_id_1, node_id_2;
-    float weight;
 
     std::getline(instance, line);
 
@@ -175,8 +174,6 @@ Graph::Graph(std::ifstream& instance, const Parameters parameters)
         std::getline(instance, line);
     }
     
-
-
 }
 
 
@@ -220,12 +217,43 @@ Graph::~Graph()
         // Remove as arestas do nó
         for(Edge *edge = aux->first_edge; edge != nullptr; edge = aux->first_edge)
         {
+            if(edge == nullptr)
+                break;
             aux->first_edge = edge->next_edge;
             delete edge;
         }
         delete aux;
         aux = next;
     }
+
+    // // remove todas arestas
+    // for(auto node = this->first_node; node != this->last_node; node = node->next_node)
+    // {
+    //     if(node->first_edge == nullptr)
+    //         continue;
+    //     for(auto edge = node->first_edge; edge != nullptr; edge = node->first_edge)
+    //     {
+    //         if(node->first_edge == nullptr || edge == nullptr || edge->next_edge == nullptr)
+    //             break;
+    //         node->first_edge = edge->next_edge;
+    //         delete edge;
+    //     }
+    // }
+    // for(auto edge = this->last_node->first_edge; edge != nullptr; edge = this->last_node->first_edge)
+    // {
+    //     if(this->last_node->first_edge == nullptr || edge == nullptr)
+    //         break;
+    //     this->last_node->first_edge = edge->next_edge;
+    //     delete edge;
+    // }
+    // // remove todos os nós
+    // for(auto node = this->first_node; node != this->last_node; node = this->first_node)
+    // {
+    //     if(this->first_node == nullptr || node == nullptr)
+    //         break;
+    //     this->first_node = node->next_node;
+    //     delete node;
+    // }
 
     // Reseta as variáveis
     this->first_node = nullptr;
@@ -534,6 +562,9 @@ int Graph::connected(const size_t node_id_1, const size_t node_id_2)
         std::cout << "Error: nodes not found\n";
         return -1;
     }
+
+    if(node_1->first_edge == nullptr || node_2->first_edge == nullptr)
+        return 0;
 
     // Checa se os nós estão conectados
     for(Edge *edge = node_1->first_edge; edge != nullptr; edge = edge->next_edge)
