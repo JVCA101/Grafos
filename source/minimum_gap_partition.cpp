@@ -9,6 +9,8 @@ Partitions Graph::mggpp_partition_greedy()
         std::cout << "Invalid number of partitions" << std::endl;
         exit(1);
     }
+
+    std::cout << "Number of partitions: " << p << std::endl;
     
     std::vector<Node> nodes = this->get_nodes();
     // std::sort(nodes.begin(), nodes.end(), [](Node& node_1, Node& node_2) -> bool {
@@ -18,12 +20,15 @@ Partitions Graph::mggpp_partition_greedy()
     Partitions clusters;
     this->partition_setup(nodes, clusters);
 
+    std::cout << "Partitions setup" << std::endl;
+
     auto gaps = std::vector<float>(p, inf_f);
 
     // initialize gaps
     for(size_t i = 0; i < p; i++)
         gaps[i] = std::abs(clusters[i][0].weight - clusters[i][1].weight);
 
+    std::cout << "Gaps initialized" << std::endl;
 
     while(!nodes.empty())
     {
@@ -38,11 +43,15 @@ Partitions Graph::mggpp_partition_greedy()
             auto node = nodes[0];
             nodes.erase(nodes.begin());
             nodes.push_back(node);
+            std::cout << "Node not found" << "\n";
             continue;
         }
 
         gaps[gap_i] = gap;
         clusters[gap_i].push_back(nodes[0]);
+        nodes.erase(nodes.begin());
+        // std::cout << "Node " << nodes[0].id << " added to cluster" << "\n";
+        // nodes.erase(nodes.begin());
     }
 
     return clusters;
@@ -183,8 +192,9 @@ void Graph::partition_setup(std::vector<Node>& nodes, Partitions& clusters)
         {
             node = nodes[j];
             float gap = inf_f;
-
-            if(this->connected(node.id, clusters[i][j].id) == 1 && std::abs(node.weight - clusters[i][j].weight) < gap)
+            // std::cout << "node: " << node.id << std::endl;
+            // std::cout << "cluster: " << clusters[i].front().id << std::endl;
+            if(this->connected(node.id, clusters[i].front().id) == 1 && std::abs(node.weight - clusters[i][j].weight) < gap)
             {
                 gap = node.weight - clusters[i].front().weight;
                 remove = j;

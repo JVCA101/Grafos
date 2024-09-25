@@ -71,7 +71,7 @@ Graph::Graph(std::ifstream& instance, const bool directed, const bool weighted_e
  * @brief Construct a new Graph:: Graph object from a file
  * It is used on the instances for the minimum gap graph partition problem
  */
-Graph::Graph(std::ifstream& instance, const Parameters parameters)
+Graph::Graph(std::ifstream& instance, Parameters parameters)
 {
     if(!instance.is_open())
     {
@@ -81,6 +81,11 @@ Graph::Graph(std::ifstream& instance, const Parameters parameters)
 
     std::string line, string_node_1, string_node_2, string_weight, string_aux;
     size_t node_id_1, node_id_2;
+
+    // parameters
+    this->directed = parameters.directed;
+    this->weighted_edges = parameters.weighted_edges;
+    this->weighted_nodes = parameters.weighted_nodes;
 
     std::getline(instance, line);
 
@@ -166,8 +171,6 @@ Graph::Graph(std::ifstream& instance, const Parameters parameters)
             
             line = line.substr(line.find(')') + 1);
 
-            std::cout << node_id_1 << " " << node_id_2 << std::endl;
-
             this->add_edge(node_id_1, node_id_2);
         }
         
@@ -207,53 +210,19 @@ Graph::Graph(const std::string name, const bool directed, const bool weighted_ed
  */
 Graph::~Graph()
 {
-    Node *aux = this->first_node;
-    Node *next = nullptr;
-
-    // Remove os nós
-    while(aux != nullptr)
+    auto nodes_ptr = this->get_nodes_ptr();
+    for(auto node : nodes_ptr)
     {
-        next = aux->next_node;
-        // Remove as arestas do nó
-        for(Edge *edge = aux->first_edge; edge != nullptr; edge = aux->first_edge)
-        {
-            if(edge == nullptr)
-                break;
-            aux->first_edge = edge->next_edge;
-            delete edge;
-        }
-        delete aux;
-        aux = next;
+        auto edges_ptr = this->get_edges_ptr(node->id);
+        for(auto edge : edges_ptr)
+            if(edge != nullptr)
+                delete edge;
     }
 
-    // // remove todas arestas
-    // for(auto node = this->first_node; node != this->last_node; node = node->next_node)
-    // {
-    //     if(node->first_edge == nullptr)
-    //         continue;
-    //     for(auto edge = node->first_edge; edge != nullptr; edge = node->first_edge)
-    //     {
-    //         if(node->first_edge == nullptr || edge == nullptr || edge->next_edge == nullptr)
-    //             break;
-    //         node->first_edge = edge->next_edge;
-    //         delete edge;
-    //     }
-    // }
-    // for(auto edge = this->last_node->first_edge; edge != nullptr; edge = this->last_node->first_edge)
-    // {
-    //     if(this->last_node->first_edge == nullptr || edge == nullptr)
-    //         break;
-    //     this->last_node->first_edge = edge->next_edge;
-    //     delete edge;
-    // }
-    // // remove todos os nós
-    // for(auto node = this->first_node; node != this->last_node; node = this->first_node)
-    // {
-    //     if(this->first_node == nullptr || node == nullptr)
-    //         break;
-    //     this->first_node = node->next_node;
-    //     delete node;
-    // }
+    
+    // remove all nodes
+    for(auto node : nodes_ptr)
+        delete node;
 
     // Reseta as variáveis
     this->first_node = nullptr;
@@ -391,6 +360,7 @@ void Graph::add_node(const size_t node_id, const float weight)
     
     //considerando weight = 0 e node id não contida no grafo
     Node *p   = new Node;
+    p->first_edge = nullptr;
 
     // Checa se grafo é ponderado
     if(this->weighted_nodes){
@@ -448,6 +418,7 @@ void Graph::add_edge(const size_t node_id_1, const size_t node_id_2, const float
 
     // Cria a aresta
     Edge *new_edge = new Edge;
+    new_edge->next_edge = node_1->first_edge;
     new_edge->origin_id = node_id_1;
 
     // Inicializa aresta para apontar para o nó 2
@@ -477,8 +448,9 @@ void Graph::add_edge(const size_t node_id_1, const size_t node_id_2, const float
         new_edge2->weight = weight;
 
         // Adiciona a aresta ao nó 2
-        new_edge2->next_edge = node_2->first_edge;
+        auto aux2 = node_2->first_edge;
         node_2->first_edge = new_edge2;
+        new_edge2->next_edge = aux2;
         node_2->number_of_edges++;
 
         this->number_of_edges++;
@@ -779,6 +751,28 @@ std::vector<Edge> Graph::get_edges(const size_t node_id) const
 
     for(Edge *edge = node->first_edge; edge != nullptr; edge = edge->next_edge)
         edges.push_back(*edge);
+
+    return edges;
+}
+
+/**
+ * @brief 
+ * 
+ * @param node_id 
+ * @return std::vector<Edge*> 
+ */
+std::vector<Edge*> Graph::get_edges_ptr(const size_t node_id) const
+{
+    std::vector<Edge*> edges;
+    Node *node = this->get_node(node_id);
+    if(node == nullptr)
+    {
+        std::cout << "Error: node not found\n";
+        exit(1);
+    }
+
+    for(Edge *edge = node->first_edge; edge != nullptr; edge = edge->next_edge)
+        edges.push_back(edge);
 
     return edges;
 }

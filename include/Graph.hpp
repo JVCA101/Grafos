@@ -27,7 +27,7 @@ public:
 
     //* Funções Principais
     Graph(std::ifstream& instance, const bool directed = false, const bool weighted_edges = false, const bool weighted_nodes = false);
-    Graph(std::ifstream& instance, const Parameters parameters);
+    Graph(std::ifstream& instance, Parameters parameters);
     Graph(const std::string name, const bool directed = false, const bool weighted_edges = false, const bool weighted_nodes = false);
     Graph() = default;
     Graph(const Graph& graph) = default;
@@ -76,6 +76,7 @@ public:
     std::vector<Node*> get_nodes_ptr() const;
     std::vector<Edge> get_edges() const;
     std::vector<Edge> get_edges(const size_t node_id) const;
+    std::vector<Edge*> get_edges_ptr(const size_t node_id) const;
     const std::string get_name() const noexcept;
     bool is_directed() const noexcept;
     bool has_weighted_edges() const noexcept;
