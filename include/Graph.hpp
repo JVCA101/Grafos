@@ -110,7 +110,7 @@ private:
     float weight_of_connection(Graph& graph, Node& node_1, Node& node_2);
     Node* inicialize_j(Graph& graph);
 
-    void greedy_aux(std::vector<Node>& nodes, Partitions& clusters, bool& found, float& gap, size_t& gap_i);
+    size_t greedy_aux(Node& node, Partitions& clusters, std::vector<float>& min, std::vector<float>& max, float& gap, size_t& gap_i);
     void partition_setup(std::vector<Node>& nodes, Partitions& clusters);
 
 };
