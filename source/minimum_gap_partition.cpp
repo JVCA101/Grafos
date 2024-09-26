@@ -1,5 +1,7 @@
 #include "../include/defines.hpp"
 #include "../include/Graph.hpp"
+#include <algorithm>
+#include <random>
 
 Partitions Graph::mggpp_partition_greedy()
 {
@@ -84,8 +86,12 @@ Partitions Graph::mggpp_partition_greedy()
     }
 
     // print gaps
-    for(size_t i = 0; i < p; i++)
+    float total_gap = 0;
+    for(size_t i = 0; i < p; i++){
         std::cout << "Gap " << i << ": " << gaps[i] << "\n";
+        total_gap += gaps[i];
+    }
+    std::cout << "Total gap: " << total_gap << "\n";
 
 
     return clusters;
@@ -111,67 +117,112 @@ Partitions Graph::mggpp_greedy_randomized_adaptive(const unsigned int iterations
     }
 
     Partitions best_clusters;
+    std::vector<float> best_gaps;
     
-    // for(size_t i = 0; i < iterations; i++)
-    // {
-    //     std::vector<Node> nodes = this->get_nodes();
-    //     unsigned int nodes_size = nodes.size();
+    for(size_t k = 0; k < iterations; k++)
+    {
+        std::vector<Node> nodes = this->get_nodes();
+        unsigned int nodes_size = nodes.size();
 
-    //     // shuffle based on the alpha value
-    //     std::random_shuffle(nodes.begin(), nodes.end(), [alpha, nodes_size](int) -> int {
-    //         return (nodes_size-1) * alpha;
-    //     });
+        // shuffle based on the alpha value
+        // std::random_shuffle(nodes.begin(), nodes.end(), [alpha, nodes_size](int) -> int {
+        //     return (nodes_size-1) * alpha;
+        // });
 
-    //     Partitions clusters;
-    //     this->partition_setup(nodes, clusters);
+        std::random_device rd;
+        std::mt19937 g(rd());
+        std::shuffle(nodes.begin(), nodes.end(), g);
 
-    //     auto gaps = std::vector<float>(p, inf_f);
+        if (alpha < 1.0) {
+            int n_swaps = nodes.size() * alpha;  // Reducing the number of swaps based on alpha
+            for (int i = 0; i < n_swaps; ++i) {
+                std::swap(nodes[i], nodes[nodes.size() - i - 1]);
+            }
+        }
 
-    //     // initialize gaps
-    //     for(size_t i = 0; i < p; i++)
-    //         gaps[i] = std::abs(clusters[i][0].weight - clusters[i][1].weight);
 
-    //     while(!nodes.empty())
-    //     {
-    //         float gap = inf_f;
-    //         size_t gap_i = 0;
-    //         bool found = false;
-            
-    //         this->greedy_aux(nodes[0], clusters, found, gap, gap_i);
+        Partitions clusters;
+        this->partition_setup(nodes, clusters);
 
-    //         if(!found)
-    //         {
-    //             auto node = nodes[0];
-    //             nodes.erase(nodes.begin());
-    //             nodes.push_back(node);
-    //             continue;
-    //         }
+        auto gaps = std::vector<float>(p, inf_f);
+        auto max_weight = std::vector<float>(p, 0.0);
+        auto min_weight = std::vector<float>(p, inf_f);
 
-    //         gaps[gap_i] = gap;
-    //         clusters[gap_i].push_back(nodes[0]);
-    //     }
+        for(size_t i = 0; i < p; i++)
+            for(size_t j = 0; j < clusters[i].size(); j++)
+            {
+                max_weight[i] = std::max(max_weight[i], clusters[i][j].weight);
+                min_weight[i] = std::min(min_weight[i], clusters[i][j].weight);
+            }
 
-    //     if(i == 0)
-    //         best_clusters = clusters;
-    //     else
-    //     {
-    //         float best_gap = 0;
-    //         float current_gap = 0;
+        // initialize gaps
+        for(size_t i = 0; i < p; i++)
+            gaps[i] = std::abs(clusters[i][0].weight - clusters[i][1].weight);
 
-    //         for(size_t i = 0; i < p; i++)
-    //         {
-    //             for(size_t j = 0; j < best_clusters[i].size(); j++)
-    //                 best_gap += std::abs(best_clusters[i][0].weight - best_clusters[i][j].weight);
-    //             for(size_t j = 0; j < clusters[i].size(); j++)
-    //                 current_gap += std::abs(clusters[i][0].weight - clusters[i][j].weight);
-    //         }
+        while(!nodes.empty())
+        {
+            float gap = inf_f;
+            size_t gap_i = 0;
+            bool found = false;
 
-    //         if(current_gap < best_gap)
-    //             best_clusters = clusters;
-    //     }
+            size_t id = this->greedy_aux(nodes[0], clusters, min_weight, max_weight, gap, gap_i);
+
+            if(id == -1)
+            {
+                auto node = nodes[0];
+                nodes.erase(nodes.begin());
+                nodes.push_back(node);
+                // std::cout << "id_node: " << node.id << "\nNode not found" << "\n";
+                continue;
+            }
+
+            if (max_weight[id] - nodes[0].weight < nodes[0].weight - min_weight[id]){
+                max_weight[id] = nodes[0].weight;
+            } else {
+                min_weight[id] = nodes[0].weight;
+            }
+
+            gaps[id] = max_weight[id] - min_weight[id];
+            clusters[id].push_back(nodes[0]);
+            nodes.erase(nodes.begin());
+        }
+
+        if(k == 0)
+        {
+            best_clusters = clusters;
+            best_gaps = gaps;
+        }
+        else
+        {
+            float best_gap = 0;
+            float current_gap = 0;
+
+            for(size_t i = 0; i < p; i++)
+            {
+                for(size_t j = 0; j < best_clusters[i].size(); j++)
+                    best_gap += std::abs(best_clusters[i][0].weight - best_clusters[i][j].weight);
+                for(size_t j = 0; j < clusters[i].size(); j++)
+                    current_gap += std::abs(clusters[i][0].weight - clusters[i][j].weight);
+            }
+
+            if(current_gap < best_gap)
+            {
+                best_clusters = clusters;
+                best_gaps = gaps;
+            }
+        }
         
         
-    // }
+    }
+
+    // print clusters
+    for(size_t i = 0; i < p; i++)
+    {
+        std::cout << "Cluster " << i << ": ";
+        for(size_t j = 0; j < best_clusters[i].size(); j++)
+            std::cout << best_clusters[i][j].id << " ";
+        std::cout << "\n";
+    }
 
     return best_clusters;
 
@@ -253,12 +304,12 @@ void Graph::partition_setup(std::vector<Node>& nodes, Partitions& clusters)
         nodes.erase(nodes.begin() + remove);
     }
 
-    // print clusters
-    for(size_t i = 0; i < this->number_of_partitions; i++)
-    {
-        std::cout << "Cluster " << i << ": ";
-        for(size_t j = 0; j < clusters[i].size(); j++)
-            std::cout << clusters[i][j].id << " ";
-        std::cout << "\n";
-    }
+    // // print clusters
+    // for(size_t i = 0; i < this->number_of_partitions; i++)
+    // {
+    //     std::cout << "Cluster " << i << ": ";
+    //     for(size_t j = 0; j < clusters[i].size(); j++)
+    //         std::cout << clusters[i][j].id << " ";
+    //     std::cout << "\n";
+    // }
 }
