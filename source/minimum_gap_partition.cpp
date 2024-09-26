@@ -45,22 +45,24 @@ Partitions Graph::mggpp_partition_greedy()
         std::cout << "\n";
     }
 
-    size_t id;
+    // print gaps
+    for(size_t i = 0; i < p; i++)
+        std::cout << "Gap " << i << ": " << gaps[i] << "\n";
 
     while(!nodes.empty())
     {
         float gap = inf_f;
         size_t gap_i = 0;
         bool found = false;
-        
-        id = this->greedy_aux(nodes[0], clusters, min_weight, max_weight, gap, gap_i);
+
+        size_t id = this->greedy_aux(nodes[0], clusters, min_weight, max_weight, gap, gap_i);
 
         if(id == -1)
         {
             auto node = nodes[0];
             nodes.erase(nodes.begin());
             nodes.push_back(node);
-            std::cout << "Node not found" << "\n";
+            std::cout << "id_node: " << node.id << "\nNode not found" << "\n";
             continue;
         }
 
@@ -80,6 +82,10 @@ Partitions Graph::mggpp_partition_greedy()
         // std::cout << "Node " << nodes[0].id << " added to cluster" << "\n";
         // nodes.erase(nodes.begin());
     }
+
+    // print gaps
+    for(size_t i = 0; i < p; i++)
+        std::cout << "Gap " << i << ": " << gaps[i] << "\n";
 
 
     return clusters;
@@ -186,36 +192,38 @@ size_t Graph::greedy_aux(Node& node, Partitions& clusters, std::vector<float>& m
 {
     size_t id = -1;
 
-    size_t better_gap = 0;
+    size_t better_gap = inf_f;
 
 
     for(size_t i = 0; i < clusters.size(); i++)
     {
         for ( size_t j = 0; j < clusters[i].size(); j++){
 
-        if(this->connected(node.id, clusters[i][j].id) == 1)
-        {
-            if(node.weight >= min[i] && node.weight <= max[i])
+            if(this->connected(node.id, clusters[i][j].id) == 1)
             {
-                return i;
-
-            } else if(node.weight < min[i]){
-                if(max[i] - node.weight < better_gap)
+                // std::cout << "Node " << node.id << " is connected to cluster " << i << "\n";
+                if(node.weight >= min[i] && node.weight <= max[i])
                 {
-                    better_gap = max[i] - node.weight;
-                    id = i;
+                    return i;
                 }
-            } else if(node.weight > max[i]){
-                if(node.weight - min[i] < better_gap)
-                {
-                    better_gap = node.weight - min[i];
-                    id = i;
+                else if(node.weight < min[i]){
+                    if(max[i] - node.weight < better_gap)
+                    {
+                        better_gap = max[i] - node.weight;
+                        id = i;
+                    }
                 }
+                else if(node.weight > max[i]){
+                    if(node.weight - min[i] < better_gap)
+                    {
+                        better_gap = node.weight - min[i];
+                        id = i;
+                    }
+                }
+                break;
             }
-            continue;
         }
     }
-}
     return id;
 }
 
@@ -229,10 +237,11 @@ void Graph::partition_setup(std::vector<Node>& nodes, Partitions& clusters)
         clusters[i].push_back(nodes.front());
         nodes.erase(nodes.begin());
         size_t remove = 0;
+        float gap = inf_f;
         for(size_t j = 0; j < nodes.size(); j++)
         {
             Node node = nodes[j];
-            float gap = inf_f;
+            // float gap = inf_f;
             if(this->connected(node.id, clusters[i].front().id) == 1 && std::abs(node.weight - clusters[i][0].weight) < gap)
             {
                 gap = node.weight - clusters[i].front().weight;
@@ -242,5 +251,14 @@ void Graph::partition_setup(std::vector<Node>& nodes, Partitions& clusters)
 
         clusters[i].push_back(nodes[remove]);
         nodes.erase(nodes.begin() + remove);
+    }
+
+    // print clusters
+    for(size_t i = 0; i < this->number_of_partitions; i++)
+    {
+        std::cout << "Cluster " << i << ": ";
+        for(size_t j = 0; j < clusters[i].size(); j++)
+            std::cout << clusters[i][j].id << " ";
+        std::cout << "\n";
     }
 }
