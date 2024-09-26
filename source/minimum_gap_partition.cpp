@@ -55,7 +55,7 @@ Partitions Graph::mggpp_partition_greedy()
         
         id = this->greedy_aux(nodes[0], clusters, min_weight, max_weight, gap, gap_i);
 
-        if(!found)
+        if(id == -1)
         {
             auto node = nodes[0];
             nodes.erase(nodes.begin());
@@ -64,9 +64,19 @@ Partitions Graph::mggpp_partition_greedy()
             continue;
         }
 
-        gaps[gap_i] = gap;
-        clusters[gap_i].push_back(nodes[0]);
+        if (max_weight[id] - nodes[0].weight < nodes[0].weight - min_weight[id]){
+            max_weight[id] = nodes[0].weight;
+        } else {
+            min_weight[id] = nodes[0].weight;
+        }
+
+        gaps[id] = max_weight[id] - min_weight[id];
+        clusters[id].push_back(nodes[0]);
         nodes.erase(nodes.begin());
+
+        // gaps[gap_i] = gap;
+        // clusters[gap_i].push_back(nodes[0]);
+        // nodes.erase(nodes.begin());
         // std::cout << "Node " << nodes[0].id << " added to cluster" << "\n";
         // nodes.erase(nodes.begin());
     }
@@ -175,40 +185,37 @@ Partitions Graph::mggpp_greedy_randomized_adaptive_reactive()
 size_t Graph::greedy_aux(Node& node, Partitions& clusters, std::vector<float>& min, std::vector<float>& max, float& gap, size_t& gap_i)
 {
     size_t id = -1;
-    // // para cada cluster
-    // for(size_t i = 0; i < clusters.size(); i++)
-    // {
-        // // para cada nó do cluster
-        // for(size_t j = 0; j < clusters[i].size(); j++)
-        // {
-        //     if(this->connected(nodes[0].id, clusters[i][j].id) != 1)
-        //         continue;
 
-        //     found = true;
-        //     // verifica se o gap é menor que o gap atual
-        //     for(size_t k = 0; k < clusters[i].size(); k++)
-        //         if(std::abs(nodes[0].weight - clusters[i][k].weight) < gap)
-        //         {
-        //             gap_i = i;
-        //             gap = std::abs(nodes[0].weight - clusters[i][k].weight);
-        //         }
-        // }
-    // }
-
+    size_t better_gap = 0;
 
 
     for(size_t i = 0; i < clusters.size(); i++)
     {
-        if(this->connected(node.id, clusters[i][0].id) == 1)
+        for ( size_t j = 0; j < clusters[i].size(); j++){
+
+        if(this->connected(node.id, clusters[i][j].id) == 1)
         {
             if(node.weight >= min[i] && node.weight <= max[i])
             {
-                gap = 
-                id = i;
+                return i;
+
+            } else if(node.weight < min[i]){
+                if(max[i] - node.weight < better_gap)
+                {
+                    better_gap = max[i] - node.weight;
+                    id = i;
+                }
+            } else if(node.weight > max[i]){
+                if(node.weight - min[i] < better_gap)
+                {
+                    better_gap = node.weight - min[i];
+                    id = i;
+                }
             }
+            continue;
         }
     }
-
+}
     return id;
 }
 
