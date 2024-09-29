@@ -15,9 +15,6 @@ Partitions Graph::mggpp_partition_greedy()
     std::cout << "Number of partitions: " << p << std::endl;
     
     std::vector<Node> nodes = this->get_nodes();
-    // std::sort(nodes.begin(), nodes.end(), [](Node& node_1, Node& node_2) -> bool {
-    //     return node_1.number_of_edges < node_2.number_of_edges;
-    // });
 
     Partitions clusters;
     this->partition_setup(nodes, clusters);
@@ -27,6 +24,7 @@ Partitions Graph::mggpp_partition_greedy()
     auto max_weight = std::vector<float>(p, 0.0);
     auto min_weight = std::vector<float>(p, inf_f);
 
+    // initialize max and min weights
     for(size_t i = 0; i < p; i++)
         for(size_t j = 0; j < clusters[i].size(); j++)
         {
@@ -38,21 +36,11 @@ Partitions Graph::mggpp_partition_greedy()
     for(size_t i = 0; i < p; i++)
         gaps[i] = std::abs(clusters[i][0].weight - clusters[i][1].weight);
 
-    // print clusters
-    for(size_t i = 0; i < p; i++)
-    {
-        std::cout << "Cluster " << i << ": ";
-        for(size_t j = 0; j < clusters[i].size(); j++)
-            std::cout << clusters[i][j].id << " ";
-        std::cout << "\n";
-    }
 
-    // print gaps
-    for(size_t i = 0; i < p; i++)
-        std::cout << "Gap " << i << ": " << gaps[i] << "\n";
-
+    // greedy algorithm
     while(!nodes.empty())
     {
+        // id of the cluster that the node will be added
         int id = this->greedy_aux(nodes[0], clusters, min_weight, max_weight);
 
         if(id == -1)
@@ -60,35 +48,21 @@ Partitions Graph::mggpp_partition_greedy()
             auto node = nodes[0];
             nodes.erase(nodes.begin());
             nodes.push_back(node);
-            std::cout << "id_node: " << node.id << "\nNode not found" << "\n";
             continue;
         }
 
-        if (max_weight[id] - nodes[0].weight < nodes[0].weight - min_weight[id]){
+        // update max and min weights
+        if(max_weight[id] - nodes[0].weight < nodes[0].weight - min_weight[id])
             max_weight[id] = nodes[0].weight;
-        } else {
+        else
             min_weight[id] = nodes[0].weight;
-        }
+
 
         gaps[id] = max_weight[id] - min_weight[id];
         clusters[id].push_back(nodes[0]);
         nodes.erase(nodes.begin());
 
-        // gaps[gap_i] = gap;
-        // clusters[gap_i].push_back(nodes[0]);
-        // nodes.erase(nodes.begin());
-        // std::cout << "Node " << nodes[0].id << " added to cluster" << "\n";
-        // nodes.erase(nodes.begin());
     }
-
-    // print gaps
-    float total_gap = 0;
-    for(size_t i = 0; i < p; i++){
-        std::cout << "Gap " << i << ": " << gaps[i] << "\n";
-        total_gap += gaps[i];
-    }
-    std::cout << "Total gap: " << total_gap << "\n";
-
 
     return clusters;
 }
@@ -120,16 +94,13 @@ Partitions Graph::mggpp_greedy_randomized_adaptive(const unsigned int iterations
         std::vector<Node> nodes = this->get_nodes();
 
         // shuffle based on the alpha value
-        // std::random_shuffle(nodes.begin(), nodes.end(), [alpha, nodes_size](int) -> int {
-        //     return (nodes_size-1) * alpha;
-        // });
-
         std::random_device rd;
         std::mt19937 g(rd());
         std::shuffle(nodes.begin(), nodes.end(), g);
 
-        if (alpha < 1.0) {
-            int n_swaps = nodes.size() * alpha;  // Reducing the number of swaps based on alpha
+        if (alpha < 1.0)
+        {
+            int n_swaps = nodes.size() * alpha;
             for (int i = 0; i < n_swaps; ++i) {
                 std::swap(nodes[i], nodes[nodes.size() - i - 1]);
             }
@@ -143,6 +114,7 @@ Partitions Graph::mggpp_greedy_randomized_adaptive(const unsigned int iterations
         auto max_weight = std::vector<float>(p, 0.0);
         auto min_weight = std::vector<float>(p, inf_f);
 
+        // initialize max and min weights
         for(size_t i = 0; i < p; i++)
             for(size_t j = 0; j < clusters[i].size(); j++)
             {
@@ -154,8 +126,11 @@ Partitions Graph::mggpp_greedy_randomized_adaptive(const unsigned int iterations
         for(size_t i = 0; i < p; i++)
             gaps[i] = std::abs(clusters[i][0].weight - clusters[i][1].weight);
 
+
+        // greedy algorithm
         while(!nodes.empty())
         {
+            // id of the cluster that the node will be added
             int id = this->greedy_aux(nodes[0], clusters, min_weight, max_weight);
 
             if(id == -1)
@@ -163,15 +138,15 @@ Partitions Graph::mggpp_greedy_randomized_adaptive(const unsigned int iterations
                 auto node = nodes[0];
                 nodes.erase(nodes.begin());
                 nodes.push_back(node);
-                // std::cout << "id_node: " << node.id << "\nNode not found" << "\n";
                 continue;
             }
 
-            if (max_weight[id] - nodes[0].weight < nodes[0].weight - min_weight[id]){
+            // update max and min weights
+            if(max_weight[id] - nodes[0].weight < nodes[0].weight - min_weight[id])
                 max_weight[id] = nodes[0].weight;
-            } else {
+            else
                 min_weight[id] = nodes[0].weight;
-            }
+            
 
             gaps[id] = max_weight[id] - min_weight[id];
             clusters[id].push_back(nodes[0]);
@@ -188,6 +163,7 @@ Partitions Graph::mggpp_greedy_randomized_adaptive(const unsigned int iterations
             float best_gap = 0;
             float current_gap = 0;
 
+            // evaluate the current solution and compare with the best solution
             for(size_t i = 0; i < p; i++)
             {
                 for(size_t j = 0; j < best_clusters[i].size(); j++)
@@ -196,6 +172,7 @@ Partitions Graph::mggpp_greedy_randomized_adaptive(const unsigned int iterations
                     current_gap += std::abs(clusters[i][0].weight - clusters[i][j].weight);
             }
 
+            // update the best solution
             if(current_gap < best_gap)
             {
                 best_clusters = clusters;
@@ -206,15 +183,6 @@ Partitions Graph::mggpp_greedy_randomized_adaptive(const unsigned int iterations
         
     }
 
-    // print clusters
-    for(size_t i = 0; i < p; i++)
-    {
-        std::cout << "Cluster " << i << ": ";
-        for(size_t j = 0; j < best_clusters[i].size(); j++)
-            std::cout << best_clusters[i][j].id << " ";
-        std::cout << "\n";
-    }
-
     return best_clusters;
 
 }
@@ -222,7 +190,6 @@ Partitions Graph::mggpp_greedy_randomized_adaptive(const unsigned int iterations
 
 Partitions Graph::mggpp_greedy_randomized_adaptive_reactive(const unsigned int iterations,const std::vector<float> alphas)
 {
-    std::cout << "Reactive" << std::endl;
     const unsigned int p = this->number_of_partitions;
     if(p <= 1 || p >= this->number_of_nodes)
     {
@@ -265,6 +232,7 @@ Partitions Graph::mggpp_greedy_randomized_adaptive_reactive(const unsigned int i
         auto max_weight = std::vector<float>(p, 0.0);
         auto min_weight = std::vector<float>(p, inf_f);
 
+        // Inicializar os pesos máximos e mínimos
         for(size_t i = 0; i < p; i++)
             for(size_t j = 0; j < clusters[i].size(); j++)
             {
@@ -272,11 +240,15 @@ Partitions Graph::mggpp_greedy_randomized_adaptive_reactive(const unsigned int i
                 min_weight[i] = std::min(min_weight[i], clusters[i][j].weight);
             }
 
+        // Inicializar os gaps
         for(size_t i = 0; i < p; i++)
             gaps[i] = std::abs(clusters[i][0].weight - clusters[i][1].weight);
 
+
+        // Algoritmo guloso
         while(!nodes.empty())
         {
+            // id do cluster que o nó será adicionado
             int id = this->greedy_aux(nodes[0], clusters, min_weight, max_weight);
 
             if(id == -1)
@@ -287,11 +259,10 @@ Partitions Graph::mggpp_greedy_randomized_adaptive_reactive(const unsigned int i
                 continue;
             }
 
-            if (max_weight[id] - nodes[0].weight < nodes[0].weight - min_weight[id]){
+            if(max_weight[id] - nodes[0].weight < nodes[0].weight - min_weight[id])
                 max_weight[id] = nodes[0].weight;
-            } else {
+            else
                 min_weight[id] = nodes[0].weight;
-            }
 
 
             gaps[id] = max_weight[id] - min_weight[id];
@@ -338,15 +309,6 @@ Partitions Graph::mggpp_greedy_randomized_adaptive_reactive(const unsigned int i
         }
     }
 
-    // print clusters
-    for(size_t i = 0; i < p; i++)
-    {
-        std::cout << "Cluster " << i << ": ";
-        for(size_t j = 0; j < best_clusters[i].size(); j++)
-            std::cout << best_clusters[i][j].id << " ";
-        std::cout << "\n";
-    }
-
     return best_clusters;
 }
 
@@ -368,7 +330,6 @@ size_t Graph::greedy_aux(Node& node, Partitions& clusters, std::vector<float>& m
 
             if(this->connected(node.id, clusters[i][j].id) == 1)
             {
-                // std::cout << "Node " << node.id << " is connected to cluster " << i << "\n";
                 if(node.weight >= min[i] && node.weight <= max[i])
                 {
                     return i;
@@ -408,7 +369,6 @@ void Graph::partition_setup(std::vector<Node>& nodes, Partitions& clusters)
         for(size_t j = 0; j < nodes.size(); j++)
         {
             Node node = nodes[j];
-            // float gap = inf_f;
             if(this->connected(node.id, clusters[i].front().id) == 1 && std::abs(node.weight - clusters[i][0].weight) < gap)
             {
                 gap = node.weight - clusters[i].front().weight;
@@ -420,12 +380,4 @@ void Graph::partition_setup(std::vector<Node>& nodes, Partitions& clusters)
         nodes.erase(nodes.begin() + remove);
     }
 
-    // // print clusters
-    // for(size_t i = 0; i < this->number_of_partitions; i++)
-    // {
-    //     std::cout << "Cluster " << i << ": ";
-    //     for(size_t j = 0; j < clusters[i].size(); j++)
-    //         std::cout << clusters[i][j].id << " ";
-    //     std::cout << "\n";
-    // }
 }
