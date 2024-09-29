@@ -15,7 +15,7 @@ DEPS := $(wildcard $(INC_DIR)/*.hpp)
 CXXFLAGS := -std=c++11 -Wall -Wextra
 
 # Output executable
-TARGET := execGrupoGabrielJoao
+TARGET := execGrupoGabrielJoaoThamiris
 
 .PHONY: all clean
 
