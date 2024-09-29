@@ -92,7 +92,6 @@ Graph::Graph(std::ifstream& instance, Parameters parameters)
     // lê o nome do grafo, não conta o # do começo
     this->name = line.substr(2, line.size() - 1);
     this->name = this->name.substr(0, this->name.size() - 5);
-    std::cout << this->name << "\n";
 
     do
         std::getline(instance, line);
@@ -103,7 +102,6 @@ Graph::Graph(std::ifstream& instance, Parameters parameters)
     string_aux = string_aux.substr(0, string_aux.size() - 2);
 
     this->number_of_partitions = std::stoi(string_aux);
-    std::cout << this->number_of_partitions << "\n";
 
 
     // lê o número de nós
@@ -112,7 +110,6 @@ Graph::Graph(std::ifstream& instance, Parameters parameters)
     string_aux = line.substr(2, line.size() - 10);
 
     const size_t num_nodes = std::stoi(string_aux);
-    std::cout << num_nodes << "\n";
 
     // lê os nós
     std::getline(instance, line);

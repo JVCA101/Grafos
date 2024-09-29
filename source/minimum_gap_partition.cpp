@@ -12,8 +12,6 @@ Partitions Graph::mggpp_partition_greedy()
         exit(1);
     }
 
-    std::cout << "Number of partitions: " << p << std::endl;
-    
     std::vector<Node> nodes = this->get_nodes();
 
     Partitions clusters;
