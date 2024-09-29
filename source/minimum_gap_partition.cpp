@@ -53,11 +53,7 @@ Partitions Graph::mggpp_partition_greedy()
 
     while(!nodes.empty())
     {
-        float gap = inf_f;
-        size_t gap_i = 0;
-        bool found = false;
-
-        size_t id = this->greedy_aux(nodes[0], clusters, min_weight, max_weight, gap, gap_i);
+        int id = this->greedy_aux(nodes[0], clusters, min_weight, max_weight);
 
         if(id == -1)
         {
@@ -122,7 +118,6 @@ Partitions Graph::mggpp_greedy_randomized_adaptive(const unsigned int iterations
     for(size_t k = 0; k < iterations; k++)
     {
         std::vector<Node> nodes = this->get_nodes();
-        unsigned int nodes_size = nodes.size();
 
         // shuffle based on the alpha value
         // std::random_shuffle(nodes.begin(), nodes.end(), [alpha, nodes_size](int) -> int {
@@ -161,11 +156,7 @@ Partitions Graph::mggpp_greedy_randomized_adaptive(const unsigned int iterations
 
         while(!nodes.empty())
         {
-            float gap = inf_f;
-            size_t gap_i = 0;
-            bool found = false;
-
-            size_t id = this->greedy_aux(nodes[0], clusters, min_weight, max_weight, gap, gap_i);
+            int id = this->greedy_aux(nodes[0], clusters, min_weight, max_weight);
 
             if(id == -1)
             {
@@ -231,6 +222,7 @@ Partitions Graph::mggpp_greedy_randomized_adaptive(const unsigned int iterations
 
 Partitions Graph::mggpp_greedy_randomized_adaptive_reactive(const unsigned int iterations,const std::vector<float> alphas)
 {
+    std::cout << "Reactive" << std::endl;
     const unsigned int p = this->number_of_partitions;
     if(p <= 1 || p >= this->number_of_nodes)
     {
@@ -257,7 +249,6 @@ Partitions Graph::mggpp_greedy_randomized_adaptive_reactive(const unsigned int i
 
         // Processar a partição com o alpha selecionado
         std::vector<Node> nodes = this->get_nodes();
-        unsigned int nodes_size = nodes.size();
 
         std::shuffle(nodes.begin(), nodes.end(), g);
         if (alpha < 1.0) {
@@ -286,10 +277,7 @@ Partitions Graph::mggpp_greedy_randomized_adaptive_reactive(const unsigned int i
 
         while(!nodes.empty())
         {
-            float gap = inf_f;
-            size_t gap_i = 0;
-
-            size_t id = this->greedy_aux(nodes[0], clusters, min_weight, max_weight, gap, gap_i);
+            int id = this->greedy_aux(nodes[0], clusters, min_weight, max_weight);
 
             if(id == -1)
             {
@@ -305,28 +293,39 @@ Partitions Graph::mggpp_greedy_randomized_adaptive_reactive(const unsigned int i
                 min_weight[id] = nodes[0].weight;
             }
 
+
             gaps[id] = max_weight[id] - min_weight[id];
             clusters[id].push_back(nodes[0]);
             nodes.erase(nodes.begin());
         }
 
-        // Avaliar a solução atual e comparar com a melhor solução
+
         float current_gap = 0;
         float best_gap = 0;
 
-        for(size_t i = 0; i < p; i++)
-        {
-            for(size_t j = 0; j < best_clusters[i].size(); j++)
-                best_gap += std::abs(best_clusters[i][0].weight - best_clusters[i][j].weight);
-            for(size_t j = 0; j < clusters[i].size(); j++)
-                current_gap += std::abs(clusters[i][0].weight - clusters[i][j].weight);
-        }
-
-        if(k == 0 || current_gap < best_gap)
+        if(k == 0)
         {
             best_clusters = clusters;
             best_gaps = gaps;
         }
+        else
+        {
+            // Avaliar a solução atual e comparar com a melhor solução
+            for(size_t i = 0; i < p; i++)
+            {
+                for(size_t j = 0; j < best_clusters[i].size(); j++)
+                    best_gap += std::abs(best_clusters[i][0].weight - best_clusters[i][j].weight);
+                for(size_t j = 0; j < clusters[i].size(); j++)
+                    current_gap += std::abs(clusters[i][0].weight - clusters[i][j].weight);
+            }
+
+            if(current_gap < best_gap)
+            {
+                best_clusters = clusters;
+                best_gaps = gaps;
+            }
+        }
+
 
         // Atualizar o score do alpha escolhido com base na qualidade da solução
         alpha_scores[selected_alpha_index] += 1.0 / (1.0 + current_gap);
@@ -356,11 +355,11 @@ Partitions Graph::mggpp_greedy_randomized_adaptive_reactive(const unsigned int i
 //* ------------------------------------------------
 //* ---------------Funções Auxiliares---------------
 //* ------------------------------------------------
-size_t Graph::greedy_aux(Node& node, Partitions& clusters, std::vector<float>& min, std::vector<float>& max, float& gap, size_t& gap_i)
+size_t Graph::greedy_aux(Node& node, Partitions& clusters, std::vector<float>& min, std::vector<float>& max)
 {
     size_t id = -1;
 
-    size_t better_gap = inf_f;
+    size_t better_gap = max_size_t;
 
 
     for(size_t i = 0; i < clusters.size(); i++)

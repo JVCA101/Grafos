@@ -14,7 +14,7 @@ int main(int argc, char const *argv[])
 
     Graph g(file, { false, false, true });
 
-    auto partitions = g.mggpp_greedy_randomized_adaptive(100000, 0.5);
+    auto partitions = g.mggpp_greedy_randomized_adaptive_reactive(10000, { 0.1, 0.2, 0.3, 0.4, 0.5 });
 
     // compute gaps
     auto gaps = std::vector<float>();
