@@ -68,7 +68,7 @@ public:
     // minimum_gap_partition.cpp
     Partitions mggpp_partition_greedy();
     Partitions mggpp_greedy_randomized_adaptive(const unsigned int iterations, const float alpha);
-    Partitions mggpp_greedy_randomized_adaptive_reactive();
+    Partitions mggpp_greedy_randomized_adaptive_reactive(const unsigned int iterations, const std::vector<float> alphas);
 
 
     //* Getters
