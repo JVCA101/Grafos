@@ -17,8 +17,9 @@ files=$(ls instances)
 # for each file in the vector, run the program with the file as input
 for file in $files
 do
-  ./execGrupoGabrielJoaoThamiris -g instances/$file > results_greedy/$file&
-  ./execGrupoGabrielJoaoThamiris -a instances/$file >> results_random/$file&
-  ./execGrupoGabrielJoaoThamiris -r instances/$file >> results_reactive/$file&
+#   ./execGrupoGabrielJoaoThamiris -g instances/$file > results_greedy/$file &
+  ./execGrupoGabrielJoaoThamiris -a instances/$file > results_random/$file &
+  ./execGrupoGabrielJoaoThamiris -r instances/$file > results_reactive/$file &
+  wait
 done
 

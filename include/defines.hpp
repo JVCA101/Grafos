@@ -13,6 +13,7 @@
 #include <sstream>
 #include <getopt.h>
 #include <chrono>
+#include <numeric>
 
 #define inf_f std::numeric_limits<float>::infinity()
 #define inf_d std::numeric_limits<double>::infinity()

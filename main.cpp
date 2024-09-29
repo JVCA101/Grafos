@@ -3,19 +3,27 @@
 
 void print_partitions(Partitions partitions) noexcept
 {
-    float total_weight = 0.0;
+    auto gaps = std::vector<float>(partitions.size(), inf_f);
     for(size_t i = 0; i < partitions.size(); i++)
     {
+        float max_weight = 0.0, min_weight = inf_f;
         std::cout << "Cluster " << i << ": ";
         for(size_t j = 0; j < partitions[i].size(); j++)
         {
-            total_weight += partitions[i][j].weight;
+            max_weight = std::max(max_weight, partitions[i][j].weight);
+            min_weight = std::min(min_weight, partitions[i][j].weight);
             std::cout << partitions[i][j].id << " ";
         }
         std::cout << "\n";
+        gaps[i] = max_weight - min_weight;
     }
 
-    std::cout << "Total weight: " << total_weight << "\n";
+    std::cout << "Gaps: ";
+    for(size_t i = 0; i < gaps.size(); i++)
+        std::cout << gaps[i] << " ";
+    std::cout << "\n";
+
+    std::cout << "MGGPP: " << std::accumulate(gaps.begin(), gaps.end(), 0.0) << "\n";
 }
 
 struct Options
@@ -79,7 +87,7 @@ int main(int argc, char const *argv[])
     else if(options.greedy_randomized_adaptive)
     {
         auto start = std::chrono::high_resolution_clock::now();
-        auto partitions = g.mggpp_greedy_randomized_adaptive(1000, 0.3);
+        auto partitions = g.mggpp_greedy_randomized_adaptive(10000, 0.3);
         auto end = std::chrono::high_resolution_clock::now();
 
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
@@ -90,7 +98,7 @@ int main(int argc, char const *argv[])
     else if(options.greedy_randomized_adaptive_reactive)
     {
         auto start = std::chrono::high_resolution_clock::now();
-        auto partitions = g.mggpp_greedy_randomized_adaptive_reactive(1000, {0.05, 0.10, 0.15, 0.30, 0,50});
+        auto partitions = g.mggpp_greedy_randomized_adaptive_reactive(10000, {0.05, 0.10, 0.15, 0.30, 0,50});
         auto end = std::chrono::high_resolution_clock::now();
 
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
