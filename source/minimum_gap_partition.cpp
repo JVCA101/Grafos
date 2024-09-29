@@ -329,7 +329,7 @@ Partitions Graph::mggpp_greedy_randomized_adaptive_reactive(const unsigned int i
         }
 
         // Atualizar o score do alpha escolhido com base na qualidade da solução
-        alpha_scores[selected_alpha_index] += best_gap - current_gap;
+        alpha_scores[selected_alpha_index] += 1.0 / (1.0 + current_gap);
 
         // Atualizar as probabilidades de alpha com base nos scores
         float total_score = std::accumulate(alpha_scores.begin(), alpha_scores.end(), 0.0f);
