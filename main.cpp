@@ -18,32 +18,35 @@ void print_partitions(Partitions partitions) noexcept
     std::cout << "Total weight: " << total_weight << "\n";
 }
 
+struct Options
+{
+    bool greedy = false;
+    bool greedy_randomized_adaptive = false;
+    bool greedy_randomized_adaptive_reactive = false;
+};
+
+
 int main(int argc, char const *argv[])
 {
-    // if(argc != 3)
-    // {
-    //     std::cout << "Usage: " << argv[0] << " [-g|-a|-r] <input_file>\n";
-    //     return 1;
-    // }
-
+    std::string input_file;
+    Options options;
+    
     // get options
     int opt;
-    std::string input_file;
-    bool greedy = false, greedy_randomized_adaptive = false, greedy_randomized_adaptive_reactive = false;
     while((opt = getopt(argc, (char* const*)argv, "g:a:r:")) != -1)
     {
         switch(opt)
         {
             case 'g':
-                greedy = true;
+                options.greedy = true;
                 input_file = optarg;
                 break;
             case 'a':
-                greedy_randomized_adaptive = true;
+                options.greedy_randomized_adaptive = true;
                 input_file = optarg;
                 break;
             case 'r':
-                greedy_randomized_adaptive_reactive = true;
+                options.greedy_randomized_adaptive_reactive = true;
                 input_file = optarg;
                 break;
             default:
@@ -62,7 +65,7 @@ int main(int argc, char const *argv[])
 
     Graph g(file, { false, false, true });
 
-    if(greedy)
+    if(options.greedy)
     {
         auto start = std::chrono::high_resolution_clock::now();
         auto partitions = g.mggpp_partition_greedy();
@@ -73,7 +76,7 @@ int main(int argc, char const *argv[])
 
         print_partitions(partitions);
     }
-    else if(greedy_randomized_adaptive)
+    else if(options.greedy_randomized_adaptive)
     {
         auto start = std::chrono::high_resolution_clock::now();
         auto partitions = g.mggpp_greedy_randomized_adaptive(1000, 0.3);
@@ -82,15 +85,9 @@ int main(int argc, char const *argv[])
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
         std::cout << "Execution time: " << duration << "ms\n";
 
-        for(size_t i = 0; i < partitions.size(); i++)
-        {
-            std::cout << "Cluster " << i << ": ";
-            for(size_t j = 0; j < partitions[i].size(); j++)
-                std::cout << partitions[i][j].id << " ";
-            std::cout << "\n";
-        }
+        print_partitions(partitions);
     }
-    else if(greedy_randomized_adaptive_reactive)
+    else if(options.greedy_randomized_adaptive_reactive)
     {
         auto start = std::chrono::high_resolution_clock::now();
         auto partitions = g.mggpp_greedy_randomized_adaptive_reactive(1000, {0.05, 0.10, 0.15, 0.30, 0,50});
@@ -99,13 +96,7 @@ int main(int argc, char const *argv[])
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
         std::cout << "Execution time: " << duration << "ms\n";
 
-        for(size_t i = 0; i < partitions.size(); i++)
-        {
-            std::cout << "Cluster " << i << ": ";
-            for(size_t j = 0; j < partitions[i].size(); j++)
-                std::cout << partitions[i][j].id << " ";
-            std::cout << "\n";
-        }
+        print_partitions(partitions);
     }
 
     return 0;

@@ -30,3 +30,11 @@
 *.exe
 *.out
 *.app
+
+# folders
+results_greedy/
+results_random/
+results_reactive/
+
+# executable
+execGrupoGabrielJoaoThamiris
