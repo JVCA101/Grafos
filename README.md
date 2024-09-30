@@ -2,7 +2,7 @@
 
 Trabalho da Disciplina DCC059 - Teoria dos Grafos - UFJF
 
-### Alunos: Joao Victor Correa e Gabriel Oliveria Quaresma
+### Alunos: Joao Victor Correa, Gabriel Oliveria Quaresma e Thamiris Balbi
 
 ## Para compilar o programa
 
@@ -13,7 +13,10 @@ Trabalho da Disciplina DCC059 - Teoria dos Grafos - UFJF
 ## Para rodar o programa
 
 ```
-./execGrupoGabrielJoao <input_file> <output_file> <grafo_direcionado> <aresta_ponderada> <nó_ponderado>
+./execGrupoGabrielJoaoThamiris [-g|-a|-r] <input_file>
 ```
 
-onde <grafo_direcionado>, <aresta_ponderada> e <nó_ponderado> são inteiros, ou seja, inserir com 0(falso) ou 1(verdadeiro)
+## Para compilar e rodar os experimentos computacionais
+```
+./experiment
+```
